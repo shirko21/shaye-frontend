@@ -43,7 +43,8 @@ var(--bg);
 
 color:var(--white);
 
-overflow:hidden;
+overflow-x:hidden;
+overflow-y:auto;
 
 }
 
@@ -208,7 +209,8 @@ pointer-events:none;
 .auth-container{
 
 
-height:100vh;
+min-height:100vh;
+height:auto;
 
 display:flex;
 
@@ -696,6 +698,20 @@ font-size:80px;
 .auth-card{
 
 padding:20px;
+
+}
+
+.auth-container{
+
+justify-content:flex-start;
+padding-top:24px;
+padding-bottom:24px;
+
+}
+
+.brand{
+
+margin-bottom:16px;
 
 }
 
