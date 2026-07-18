@@ -251,7 +251,7 @@
       button.textContent = value ? "در حال ثبت..." : "برداشت";
     }
 
-    function submitWithdrawal() {
+    async function submitWithdrawal() {
       if (isSubmitting) {
         return;
       }
@@ -323,14 +323,16 @@
         return;
       }
 
-      if (password !== String(currentUser.password || "")) {
-        showMessage("گذرواژه برداشت نادرست است.", "error");
+      if (!window.ShayeApi) {
+        showMessage("ارتباط با سرور آماده نیست.", "error");
         return;
       }
 
       setSubmitting(true);
 
       try {
+        await window.ShayeApi.verifyPassword(password);
+
         currentUser.withdrawBalance = roundMoney(available - amount);
 
         if (!Array.isArray(currentUser.transactions)) {
@@ -370,12 +372,12 @@
       } catch (error) {
         console.error(error);
         showMessage(
-          "ثبت برداشت با خطا روبه‌رو شد. دوباره تلاش کنید.",
+          window.ShayeApi.getErrorMessage(error),
           "error"
         );
+      } finally {
+        setSubmitting(false);
       }
-
-      setSubmitting(false);
     }
 
     function initialize() {
@@ -443,6 +445,8 @@
     }
   </script>
 
+  <script src="assets/js/api-config.js"></script>
+  <script src="assets/js/api-client.js"></script>
   <script src="assets/js/auth-controls.js"></script>
   <script src="assets/js/wheel-config.js"></script>
   <script src="assets/js/lucky-wheel.js"></script>
