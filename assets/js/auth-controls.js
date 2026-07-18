@@ -72,7 +72,12 @@
     } catch (error) {
       if (
         error &&
-        (error.status === 401 || error.code === "UNAUTHORIZED")
+        (
+          error.status === 401 ||
+          error.status === 403 ||
+          error.code === "UNAUTHORIZED" ||
+          error.code === "ACCOUNT_INACTIVE"
+        )
       ) {
         clearSession();
         window.location.replace("login.html");
