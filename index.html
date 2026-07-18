@@ -209,6 +209,49 @@ class="main-btn">
 <div class="input-box">
 
 <span>
+👤
+</span>
+
+
+<input
+id="registerFullname"
+type="text"
+placeholder="نام و نام خانوادگی"
+autocomplete="name"
+maxlength="100"
+required>
+
+</div>
+
+
+
+
+<div class="input-box">
+
+<span>
+🪪
+</span>
+
+
+<input
+id="registerUsername"
+type="text"
+placeholder="نام کاربری انگلیسی"
+autocomplete="username"
+minlength="3"
+maxlength="32"
+pattern="[a-zA-Z0-9_.-]{3,32}"
+required>
+
+</div>
+
+
+
+
+
+<div class="input-box">
+
+<span>
 📧
 </span>
 
@@ -219,6 +262,26 @@ type="email"
 placeholder="ایمیل"
 autocomplete="email"
 required>
+
+</div>
+
+
+
+
+
+<div class="input-box">
+
+<span>
+📱
+</span>
+
+
+<input
+id="registerPhone"
+type="tel"
+placeholder="شماره تلفن (اختیاری)"
+autocomplete="tel"
+maxlength="20">
 
 </div>
 
@@ -240,6 +303,8 @@ id="registerPassword"
 type="password"
 placeholder="رمز عبور"
 autocomplete="new-password"
+minlength="8"
+maxlength="128"
 required>
 
 
@@ -274,6 +339,8 @@ id="confirmPassword"
 type="password"
 placeholder="تکرار رمز عبور"
 autocomplete="new-password"
+minlength="8"
+maxlength="128"
 required>
 
 
