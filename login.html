@@ -34,7 +34,7 @@
 
 
 
-<div class="card register-card">
+<form id="loginForm" class="card register-card">
 
 
 
@@ -93,6 +93,10 @@ id="loginEmail"
 
 placeholder="example@email.com"
 
+autocomplete="email"
+
+required
+
 >
 
 
@@ -126,12 +130,16 @@ id="loginPassword"
 
 placeholder="رمز عبور"
 
+autocomplete="current-password"
+
+required
+
 >
 
 
 
 </div>
-<button class="btn-green" onclick="loginUser()">
+<button class="btn-green" type="submit">
 
 ورود
 
@@ -166,129 +174,12 @@ placeholder="رمز عبور"
 
 
 
-</div>
+</form>
 
 
 
 </main>
-<script>
-
-
-function loginUser(){
-
-
-let email = document.getElementById("loginEmail").value.trim().toLowerCase();
-
-
-let password = document.getElementById("loginPassword").value;
-
-
-let message = document.getElementById("message");
-
-
-
-
-
-if(!email || !password){
-
-
-message.innerHTML="لطفاً ایمیل و رمز عبور را وارد کنید";
-
-
-return;
-
-
-}
-
-
-
-
-
-
-let users = JSON.parse(
-
-localStorage.getItem("shaye_users")
-
-) || [];
-
-
-
-
-
-
-let user = users.find(
-
-u => 
-
-String(u.email || "").trim().toLowerCase() === email &&
-
-u.password === password
-
-);
-
-
-
-
-
-
-if(!user){
-
-
-message.innerHTML="ایمیل یا رمز عبور اشتباه است";
-
-
-return;
-
-
-}
-
-if(user.blocked){
-message.innerHTML="حساب شما توسط مدیریت مسدود شده است";
-return;
-}
-
-
-
-
-
-
-localStorage.setItem(
-
-"shaye_current_user",
-
-email
-
-);
-
-
-
-
-
-
-message.innerHTML="ورود موفقیت‌آمیز بود";
-
-
-
-
-
-
-setTimeout(()=>{
-
-
-window.location.href="dashboard.html";
-
-
-},800);
-
-
-
-
-
-}
-
-
-
-</script>
+<script src="assets/js/app.js"></script>
 
 
 
