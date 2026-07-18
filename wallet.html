@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>SHAYE Wallet</title>
+
+  <link
+    href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css"
+    rel="stylesheet"
+  >
+
+  <link
+    rel="stylesheet"
+    href="assets/css/dashboard.css"
+  >
+
+  <style>
+    .wallet-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+
+    .wallet-stat-card {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .wallet-stat-card::after {
+      content: "";
+      position: absolute;
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.05);
+      left: -30px;
+      bottom: -35px;
+      pointer-events: none;
+    }
+
+    .wallet-stat-label {
+      font-size: 13px;
+      opacity: 0.75;
+      margin-bottom: 9px;
+    }
+
+    .wallet-stat-value {
+      font-size: 21px;
+      font-weight: 800;
+      word-break: break-word;
+    }
+
+    .wallet-stat-note {
+      font-size: 11px;
+      opacity: 0.65;
+      margin-top: 7px;
+      line-height: 1.8;
+    }
+
+    .vip-status-wrap {
+      margin-top: 14px;
+    }
+
+    .vip-progress-track {
+      width: 100%;
+      height: 11px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.08);
+      overflow: hidden;
+      margin: 10px 0;
+    }
+
+    .vip-progress-fill {
+      width: 0;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(
+        90deg,
+        #00c853,
+        #69f0ae
+      );
+      transition: width 0.35s ease;
+    }
+
+    .vip-progress-text {
+      font-size: 12px;
+      line-height: 1.9;
+      opacity: 0.82;
+    }
+
+    .wallet-actions {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .wallet-action-btn {
+      border: none;
+      border-radius: 12px;
+      padding: 12px 10px;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .wallet-action-btn.deposit {
+      background: #00c853;
+      color: #07140b;
+    }
+
+    .wallet-action-btn.withdraw {
+      background: rgba(255, 255, 255, 0.09);
+      color: inherit;
+      border: 1px solid rgba(255, 255, 255, 0.11);
+    }
+
+    .history-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .history-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px;
+      border-radius: 13px;
+      background: rgba(255, 255, 255, 0.045);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+    }
+
+    .history-main {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .history-icon {
+      width: 40px;
+      height: 40px;
+      flex: 0 0 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 11px;
+      background: rgba(255, 255, 255, 0.08);
+      font-size: 19px;
+    }
+
+    .history-info {
+      min-width: 0;
+    }
+
+    .history-title {
+      font-size: 13px;
+      font-weight: 800;
+      margin-bottom: 4px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .history-date {
+      font-size: 10px;
+      opacity: 0.6;
+      direction: ltr;
+      text-align: right;
+    }
+
+    .history-amount {
+      text-align: left;
+      flex: 0 0 auto;
+      direction: ltr;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .history-amount.positive {
+      color: #69f0ae;
+    }
+
+    .history-amount.negative {
+      color: #ff8a80;
+    }
+
+    .history-status {
+      display: block;
+      font-size: 9px;
+      font-weight: 500;
+      opacity: 0.65;
+      margin-top: 4px;
+      direction: rtl;
+    }
+
+    .empty-history {
+      text-align: center;
+      padding: 20px 10px;
+      opacity: 0.68;
+      font-size: 13px;
+      line-height: 2;
+    }
+
+    @media (max-width: 420px) {
+      .wallet-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+  <link rel="stylesheet" href="assets/css/lucky-wheel.css">
+  <link rel="stylesheet" href="assets/css/i18n.css">
+  <link rel="stylesheet" href="assets/css/v6.css">
+  <link rel="stylesheet" href="assets/css/premium.css">
+</head>
+
+<body>
+
+  <header class="main-header">
+    <div class="logo-container">
+
+      <div class="custom-logo">
+        S
+      </div>
+
+      <div class="brand-name">
+        SHAYE
+      </div>
+
+    </div>
+    <button type="button" class="logout-button" data-logout>خروج از حساب</button>
+  </header>
+  <main class="dashboard-container">
+
+    <div class="welcome">
+        <h2 id="walletUser">کیف پول 💳</h2>
+        <p>مدیریت دارایی شخصی</p>
+    </div>
+
+    <div class="wallet-grid">
+
+        <div class="card wallet-stat-card">
+            <div class="wallet-stat-label">
+                موجودی قابل برداشت
+            </div>
+
+            <div class="wallet-stat-value" id="withdrawBalance">
+                0 USDT
+            </div>
+
+            <div class="wallet-stat-note">
+                سودها و کمیسیون‌ها به این بخش اضافه می‌شوند.
+            </div>
+        </div>
+
+        <div class="card wallet-stat-card">
+            <div class="wallet-stat-label">
+                سرمایه
+            </div>
+
+            <div class="wallet-stat-value" id="investmentBalance">
+                0 USDT
+            </div>
+
+            <div class="wallet-stat-note">
+                این موجودی قابل برداشت نیست.
+            </div>
+        </div>
+
+    </div>
+
+    <div class="card">
+
+        <h3>وضعیت سرمایه‌گذاری</h3>
+
+        <div class="modal-row">
+            <span>VIP فعال</span>
+            <strong id="activeVip">
+                VIP 0
+            </strong>
+        </div>
+
+        <div class="modal-row">
+            <span>کل سود</span>
+            <strong id="totalProfit">
+                0 USDT
+            </strong>
+        </div>
+
+        <div class="modal-row">
+            <span>تعداد واریز</span>
+            <strong id="depositCount">
+                0
+            </strong>
+        </div>
+
+        <div class="vip-status-wrap">
+
+            <div class="vip-progress-track">
+                <div
+                    class="vip-progress-fill"
+                    id="vipProgress">
+                </div>
+            </div>
+
+            <div
+                class="vip-progress-text"
+                id="vipProgressText">
+            </div>
+
+        </div>
+
+        <div class="wallet-actions">
+
+            <button
+                class="wallet-action-btn deposit"
+                onclick="location.href='deposit.html'">
+                واریز سرمایه
+            </button>
+
+            <button
+                class="wallet-action-btn withdraw"
+                onclick="location.href='withdraw.html'">
+                برداشت
+            </button>
+
+        </div>
+
+    </div>
+
+    <div class="card">
+
+        <h3>تاریخچه تراکنش‌ها</h3>
+
+        <div
+            id="historyBox"
+            class="history-list">
+
+        </div>
+
+    </div>
+
+</main>
+
+<nav class="bottom-nav">
+
+    <button onclick="goPage('dashboard.html')">
+        🏠
+        <br>
+        خانه
+    </button>
+
+    <button
+        onclick="goPage('wallet.html')"
+        class="active">
+        💳
+        <br>
+        کیف پول
+    </button>
+
+    <button onclick="goPage('team.html')">
+        👥
+        <br>
+        تیم
+    </button>
+
+    <button onclick="goPage('tasks.html')">
+        📋
+        <br>
+        وظایف
+    </button>
+
+    <button onclick="goPage('report.html')">
+        📊
+        <br>
+        گزارش
+    </button>
+
+</nav>
+
+<script src="assets/js/navigation.js"></script>
+
+<script>
+"use strict";
+
+var USERS_KEY = "shaye_users";
+var CURRENT_USER_KEY = "shaye_current_user";
+
+function normalizeEmail(value) {
+  return String(value || "").trim().toLowerCase();
+}
+
+function loadUsers() {
+  try {
+    var data = JSON.parse(localStorage.getItem(USERS_KEY)) || [];
+    return Array.isArray(data) ? data : [];
+  } catch (error) {
+    return [];
+  }
+}
+
+function formatAmount(value) {
+  return (Number(value) || 0).toLocaleString("en-US", {
+    maximumFractionDigits: 2
+  }) + " USDT";
+}
+
+function getVip(balance) {
+  balance = Number(balance) || 0;
+  if (balance >= 10000) return 5;
+  if (balance >= 5000) return 4;
+  if (balance >= 1000) return 3;
+  if (balance >= 500) return 2;
+  if (balance >= 100) return 1;
+  return 0;
+}
+
+function isDeposit(type) {
+  return type === "deposit" ||
+         type === "investment_deposit" ||
+         type === "confirmed_deposit";
+}
+
+function getMeta(item) {
+  var type = String(item.type || "");
+
+  if (isDeposit(type)) {
+    return { icon: "📥", sign: "+", amountClass: "positive" };
+  }
+
+  if (type === "daily_profit" || type === "profit" || type === "task_profit") {
+    return { icon: "💰", sign: "+", amountClass: "positive" };
+  }
+
+  if (type === "referral_commission" || type === "referral") {
+    return { icon: "👥", sign: "+", amountClass: "positive" };
+  }
+
+  if (type === "withdrawal" || type === "withdraw" || type === "withdraw_request") {
+    return { icon: "💸", sign: "-", amountClass: "negative" };
+  }
+
+  return {
+    icon: "📄",
+    sign: Number(item.amount) < 0 ? "-" : "+",
+    amountClass: Number(item.amount) < 0 ? "negative" : "positive"
+  };
+}
+
+function formatDate(value) {
+  var date = new Date(value);
+  if (isNaN(date.getTime())) return String(value || "");
+
+  try {
+    return date.toLocaleString("fa-IR");
+  } catch (error) {
+    return date.toLocaleString();
+  }
+}
+
+var currentEmail = normalizeEmail(
+  localStorage.getItem(CURRENT_USER_KEY)
+);
+
+if (!currentEmail) {
+  location.href = "index.html";
+}
+
+var users = loadUsers();
+var userIndex = -1;
+
+for (var i = 0; i < users.length; i++) {
+  if (normalizeEmail(users[i].email) === currentEmail) {
+    userIndex = i;
+    break;
+  }
+}
+
+if (userIndex === -1) {
+  location.href = "index.html";
+}
+
+var user = users[userIndex];
+
+if (typeof user.investmentBalance !== "number") {
+  user.investmentBalance = Number(user.investment || 0);
+}
+
+if (typeof user.withdrawBalance !== "number") {
+  user.withdrawBalance =
+    Number(user.withdrawableBalance) ||
+    Number(user.balance) ||
+    0;
+}
+
+if (!Array.isArray(user.transactions)) {
+  user.transactions = [];
+}
+
+if (typeof user.dailyProfit !== "number") {
+  user.dailyProfit = 0;
+}
+
+if (typeof user.referralProfit !== "number") {
+  user.referralProfit = 0;
+}
+
+var activeVip = getVip(user.investmentBalance);
+user.activeVip = activeVip;
+
+document.getElementById("walletUser").textContent =
+  "کیف پول " + user.email;
+
+document.getElementById("withdrawBalance").textContent =
+  formatAmount(user.withdrawBalance);
+
+document.getElementById("investmentBalance").textContent =
+  formatAmount(user.investmentBalance);
+
+document.getElementById("activeVip").textContent =
+  activeVip === 0 ? "ندارد" : "VIP " + activeVip;
+
+document.getElementById("totalProfit").textContent =
+  formatAmount(
+    (Number(user.dailyProfit) || 0) +
+    (Number(user.referralProfit) || 0)
+  );
+
+var depositCount = 0;
+
+for (var d = 0; d < user.transactions.length; d++) {
+  if (isDeposit(String(user.transactions[d].type || ""))) {
+    depositCount++;
+  }
+}
+
+document.getElementById("depositCount").textContent = depositCount;
+
+var vipNeed = {
+  1: 100,
+  2: 500,
+  3: 1000,
+  4: 5000,
+  5: 10000
+};
+
+var progress = document.getElementById("vipProgress");
+var progressText = document.getElementById("vipProgressText");
+
+if (activeVip < 5) {
+  var next = activeVip + 1;
+  var target = vipNeed[next];
+  var current = Number(user.investmentBalance) || 0;
+  var percent = Math.min(current / target * 100, 100);
+
+  progress.style.width = percent + "%";
+  progressText.textContent =
+    "برای VIP " + next +
+    " به " +
+    formatAmount(Math.max(0, target - current)) +
+    " نیاز دارید.";
+} else {
+  progress.style.width = "100%";
+  progressText.textContent =
+    "تبریک، بالاترین سطح VIP فعال است.";
+}
+
+var history = document.getElementById("historyBox");
+
+if (user.transactions.length === 0) {
+  history.innerHTML =
+    '<div class="empty-history">هنوز تراکنشی ثبت نشده است.</div>';
+} else {
+  var transactions = user.transactions.slice();
+
+  transactions.sort(function (a, b) {
+    return new Date(b.date || 0).getTime() -
+           new Date(a.date || 0).getTime();
+  });
+
+  var html = "";
+
+  for (var t = 0; t < transactions.length; t++) {
+    var item = transactions[t];
+    var meta = getMeta(item);
+    var amount = Math.abs(Number(item.amount) || 0);
+
+    html +=
+      '<div class="history-item">' +
+        '<div class="history-main">' +
+          '<div class="history-icon">' +
+            meta.icon +
+          '</div>' +
+          '<div class="history-info">' +
+            '<div class="history-title">' +
+              String(item.title || item.type || "تراکنش") +
+            '</div>' +
+            '<div class="history-date">' +
+              formatDate(item.date) +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+        '<div class="history-amount ' +
+          meta.amountClass +
+        '">' +
+          meta.sign +
+          formatAmount(amount) +
+          '<span class="history-status">' +
+            String(item.status || "ثبت‌شده") +
+          '</span>' +
+        '</div>' +
+      '</div>';
+  }
+
+  history.innerHTML = html;
+}
+
+users[userIndex] = user;
+localStorage.setItem(USERS_KEY, JSON.stringify(users));
+</script>
+
+  <script src="assets/js/auth-controls.js"></script>
+  <script src="assets/js/wheel-config.js"></script>
+  <script src="assets/js/lucky-wheel.js"></script>
+  <script src="assets/js/i18n.js"></script>
+  <script src="assets/js/v6.js"></script>
+  <script src="assets/js/premium.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#080c0f">
+  <title>تیم من | SHAYE</title>
+
+  <link rel="stylesheet" href="assets/css/dashboard.css">
+
+  <style>
+    .team-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    .team-stat {
+      padding: 15px;
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 15px;
+      background: rgba(255,255,255,.035);
+    }
+
+    .team-stat span {
+      display: block;
+      margin-bottom: 7px;
+      font-size: 11px;
+      opacity: .7;
+    }
+
+    .team-stat strong {
+      display: block;
+      font-size: 17px;
+      direction: ltr;
+      text-align: right;
+    }
+
+    .invite-box {
+      margin-top: 12px;
+      padding: 13px;
+      border: 1px solid rgba(42,211,130,.24);
+      border-radius: 14px;
+      background: rgba(42,211,130,.06);
+      direction: ltr;
+      text-align: left;
+      word-break: break-all;
+      user-select: all;
+      font-size: 12px;
+      line-height: 1.8;
+    }
+
+    .invite-code-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-top: 12px;
+      padding: 12px 13px;
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 13px;
+      background: rgba(255,255,255,.03);
+    }
+
+    .invite-code-row strong {
+      direction: ltr;
+      letter-spacing: 1px;
+    }
+
+    .level-tabs {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    .level-tab {
+      min-height: 44px;
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 12px;
+      color: inherit;
+      background: rgba(255,255,255,.035);
+      font: inherit;
+      cursor: pointer;
+    }
+
+    .level-tab.active {
+      border-color: rgba(42,211,130,.4);
+      background: rgba(42,211,130,.12);
+      color: #7ff0b5;
+    }
+
+    .member-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 13px 0;
+      border-bottom: 1px solid rgba(255,255,255,.07);
+    }
+
+    .member-item:last-child {
+      border-bottom: 0;
+    }
+
+    .member-avatar {
+      display: grid;
+      flex: 0 0 42px;
+      width: 42px;
+      height: 42px;
+      place-items: center;
+      border-radius: 50%;
+      font-weight: 900;
+      background: rgba(42,211,130,.11);
+    }
+
+    .member-info {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .member-info strong,
+    .member-info span {
+      display: block;
+    }
+
+    .member-info strong {
+      margin-bottom: 5px;
+      font-size: 13px;
+      direction: ltr;
+      text-align: right;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .member-info span {
+      font-size: 11px;
+      opacity: .65;
+    }
+
+    .member-vip {
+      flex: 0 0 auto;
+      padding: 6px 9px;
+      border-radius: 999px;
+      font-size: 10px;
+      background: rgba(255,193,7,.1);
+      color: #ffd76a;
+    }
+
+    .empty-team {
+      padding: 24px 10px;
+      text-align: center;
+      line-height: 2;
+      opacity: .7;
+    }
+
+    .commission-rule {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid rgba(255,255,255,.07);
+    }
+
+    .commission-rule:last-child {
+      border-bottom: 0;
+    }
+
+    .commission-rule strong {
+      direction: ltr;
+    }
+
+    .copy-feedback {
+      min-height: 22px;
+      margin-top: 10px;
+      color: #7ff0b5;
+      text-align: center;
+      font-size: 12px;
+    }
+
+    .team-error {
+      display: none;
+      margin: 14px 0;
+      padding: 13px;
+      border: 1px solid rgba(255,107,107,.35);
+      border-radius: 13px;
+      color: #ff9b9b;
+      background: rgba(255,107,107,.08);
+      line-height: 1.9;
+      font-size: 12px;
+    }
+
+    @media (max-width: 420px) {
+      .team-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+  </style>
+  <link rel="stylesheet" href="assets/css/lucky-wheel.css">
+  <link rel="stylesheet" href="assets/css/i18n.css">
+  <link rel="stylesheet" href="assets/css/v6.css">
+  <link rel="stylesheet" href="assets/css/premium.css">
+</head>
+
+<body>
+  <header class="main-header">
+    <div class="logo-container">
+      <div class="custom-logo">S</div>
+      <div class="brand-name">SHAYE</div>
+    </div>
+    <button type="button" class="logout-button" data-logout>خروج از حساب</button>
+  </header>
+
+  <main class="dashboard-container">
+    <section class="welcome">
+      <h2>تیم من 👥</h2>
+      <p>مشاهده اعضای سه سطح و درآمد دعوت</p>
+    </section>
+
+    <div class="team-error" id="teamError"></div>
+
+    <section class="card">
+      <h3 class="section-title">لینک دعوت شما</h3>
+
+      <div class="invite-box" id="inviteLink">در حال آماده‌سازی...</div>
+
+      <div class="invite-code-row">
+        <span>کد دعوت</span>
+        <strong id="referralCode">-</strong>
+      </div>
+
+      <button type="button" class="btn-green" id="copyButton">
+        کپی لینک دعوت
+      </button>
+
+      <div class="copy-feedback" id="copyFeedback"></div>
+    </section>
+
+    <section class="card">
+      <h3 class="section-title">آمار تیم</h3>
+
+      <div class="team-grid">
+        <div class="team-stat">
+          <span>اعضای مستقیم</span>
+          <strong id="directCount">0</strong>
+        </div>
+
+        <div class="team-stat">
+          <span>کل اعضای ۳ سطح</span>
+          <strong id="totalCount">0</strong>
+        </div>
+
+        <div class="team-stat">
+          <span>پورسانت کل</span>
+          <strong id="referralProfit">0 USDT</strong>
+        </div>
+
+        <div class="team-stat">
+          <span>موجودی قابل برداشت</span>
+          <strong id="withdrawBalance">0 USDT</strong>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h3 class="section-title">اعضای تیم</h3>
+
+      <div class="level-tabs">
+        <button type="button" class="level-tab active" data-level="1">
+          سطح ۱ (<span id="level1Count">0</span>)
+        </button>
+
+        <button type="button" class="level-tab" data-level="2">
+          سطح ۲ (<span id="level2Count">0</span>)
+        </button>
+
+        <button type="button" class="level-tab" data-level="3">
+          سطح ۳ (<span id="level3Count">0</span>)
+        </button>
+      </div>
+
+      <div id="memberList">
+        <div class="empty-team">در حال دریافت اطلاعات تیم...</div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h3 class="section-title">درصد پورسانت واریز</h3>
+
+      <div class="commission-rule">
+        <span>عضو سطح ۱</span>
+        <strong>12%</strong>
+      </div>
+
+      <div class="commission-rule">
+        <span>عضو سطح ۲</span>
+        <strong>6%</strong>
+      </div>
+
+      <div class="commission-rule">
+        <span>عضو سطح ۳</span>
+        <strong>2%</strong>
+      </div>
+
+      <p style="margin-top:12px;font-size:12px;line-height:1.9;opacity:.7">
+        پورسانت پس از واریز تأییدشده مستقیماً به موجودی قابل برداشت معرف اضافه می‌شود.
+      </p>
+    </section>
+  </main>
+
+  <nav class="bottom-nav" aria-label="منوی اصلی">
+    <button type="button" data-page="dashboard.html">
+      <span>🏠</span><span>خانه</span>
+    </button>
+
+    <button type="button" data-page="wallet.html">
+      <span>💳</span><span>کیف پول</span>
+    </button>
+
+    <button type="button" data-page="team.html" class="active">
+      <span>👥</span><span>تیم</span>
+    </button>
+
+    <button type="button" data-page="tasks.html">
+      <span>📋</span><span>وظایف</span>
+    </button>
+
+    <button type="button" data-page="report.html">
+      <span>📊</span><span>گزارش</span>
+    </button>
+  </nav>
+
+  <script>
+    "use strict";
+
+    var USERS_KEY = "shaye_users";
+    var CURRENT_USER_KEY = "shaye_current_user";
+
+    var users = [];
+    var currentUser = null;
+    var selectedLevel = 1;
+
+    var teamLevels = {
+      1: [],
+      2: [],
+      3: []
+    };
+
+    function normalizeEmail(value) {
+      return String(value || "").trim().toLowerCase();
+    }
+
+    function loadUsers() {
+      try {
+        var raw = localStorage.getItem(USERS_KEY);
+        var data = raw ? JSON.parse(raw) : [];
+
+        if (!Array.isArray(data)) {
+          return [];
+        }
+
+        return data;
+      } catch (error) {
+        console.error(error);
+        return [];
+      }
+    }
+
+    function saveUsers() {
+      localStorage.setItem(USERS_KEY, JSON.stringify(users));
+    }
+
+    function createReferralCode(email) {
+      var base = normalizeEmail(email)
+        .split("@")[0]
+        .replace(/[^a-zA-Z0-9]/g, "")
+        .slice(0, 6)
+        .toUpperCase();
+
+      if (!base) {
+        base = "USER";
+      }
+
+      var code = "";
+      var exists = true;
+
+      while (exists) {
+        code = "SH" + base + Math.floor(1000 + Math.random() * 9000);
+        exists = false;
+
+        for (var i = 0; i < users.length; i++) {
+          if (
+            String(users[i].referralCode || "").toUpperCase() === code
+          ) {
+            exists = true;
+            break;
+          }
+        }
+      }
+
+      return code;
+    }
+
+    function migrateUsers() {
+      var changed = false;
+
+      for (var i = 0; i < users.length; i++) {
+        var user = users[i];
+
+        if (!user.referralCode) {
+          user.referralCode = createReferralCode(user.email);
+          changed = true;
+        }
+
+        if (typeof user.referredBy !== "string") {
+          user.referredBy = "";
+          changed = true;
+        }
+
+        if (typeof user.withdrawBalance !== "number") {
+          user.withdrawBalance =
+            Number(user.withdrawableBalance) ||
+            Number(user.profit) ||
+            Number(user.balance) ||
+            0;
+
+          changed = true;
+        }
+
+        if (typeof user.referralProfit !== "number") {
+          user.referralProfit = 0;
+          changed = true;
+        }
+
+        if (!Array.isArray(user.transactions)) {
+          user.transactions = [];
+          changed = true;
+        }
+      }
+
+      if (changed) {
+        saveUsers();
+      }
+    }
+
+    function getChildren(parentEmail) {
+      var result = [];
+      var normalizedParent = normalizeEmail(parentEmail);
+
+      for (var i = 0; i < users.length; i++) {
+        if (
+          normalizeEmail(users[i].referredBy) === normalizedParent
+        ) {
+          result.push(users[i]);
+        }
+      }
+
+      return result;
+    }
+
+    function buildThreeLevels(rootEmail) {
+      var level1 = getChildren(rootEmail);
+      var level2 = [];
+      var level3 = [];
+
+      var i;
+      var children;
+
+      for (i = 0; i < level1.length; i++) {
+        children = getChildren(level1[i].email);
+
+        for (var j = 0; j < children.length; j++) {
+          level2.push(children[j]);
+        }
+      }
+
+      for (i = 0; i < level2.length; i++) {
+        children = getChildren(level2[i].email);
+
+        for (var k = 0; k < children.length; k++) {
+          level3.push(children[k]);
+        }
+      }
+
+      teamLevels = {
+        1: level1,
+        2: level2,
+        3: level3
+      };
+    }
+
+    function formatAmount(amount) {
+      var numericAmount = Number(amount) || 0;
+
+      return numericAmount.toLocaleString("en-US", {
+        maximumFractionDigits: 2
+      }) + " USDT";
+    }
+
+    function escapeHtml(value) {
+      return String(value || "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    function formatDate(value) {
+      var date = new Date(value);
+
+      if (isNaN(date.getTime())) {
+        return "تاریخ نامشخص";
+      }
+
+      try {
+        return date.toLocaleDateString("fa-IR");
+      } catch (error) {
+        return date.toLocaleDateString();
+      }
+    }
+
+    function buildInviteLink(code) {
+      var currentLocation = window.location.href.split("?")[0].split("#")[0];
+      var slashIndex = currentLocation.lastIndexOf("/");
+      var basePath = currentLocation.substring(0, slashIndex + 1);
+
+      return (
+        basePath +
+        "index.html?ref=" +
+        encodeURIComponent(code)
+      );
+    }
+
+    function renderSummary() {
+      var inviteLink = buildInviteLink(currentUser.referralCode);
+
+      document.getElementById("inviteLink").textContent = inviteLink;
+      document.getElementById("referralCode").textContent =
+        currentUser.referralCode;
+
+      document.getElementById("directCount").textContent =
+        teamLevels[1].length;
+
+      document.getElementById("totalCount").textContent =
+        teamLevels[1].length +
+        teamLevels[2].length +
+        teamLevels[3].length;
+
+      document.getElementById("level1Count").textContent =
+        teamLevels[1].length;
+
+      document.getElementById("level2Count").textContent =
+        teamLevels[2].length;
+
+      document.getElementById("level3Count").textContent =
+        teamLevels[3].length;
+
+      document.getElementById("referralProfit").textContent =
+        formatAmount(currentUser.referralProfit);
+
+      document.getElementById("withdrawBalance").textContent =
+        formatAmount(currentUser.withdrawBalance);
+    }
+
+    function renderMembers() {
+      var list = document.getElementById("memberList");
+      var members = teamLevels[selectedLevel] || [];
+      var tabs = document.querySelectorAll(".level-tab");
+
+      for (var i = 0; i < tabs.length; i++) {
+        var tabLevel = Number(tabs[i].getAttribute("data-level"));
+
+        if (tabLevel === selectedLevel) {
+          tabs[i].classList.add("active");
+        } else {
+          tabs[i].classList.remove("active");
+        }
+      }
+
+      if (members.length === 0) {
+        list.innerHTML =
+          '<div class="empty-team">در این سطح هنوز عضوی وجود ندارد.</div>';
+
+        return;
+      }
+
+      var html = "";
+
+      for (var j = 0; j < members.length; j++) {
+        var member = members[j];
+        var email = escapeHtml(member.email);
+        var firstLetter = escapeHtml(
+          String(member.email || "U").charAt(0).toUpperCase()
+        );
+        var vip = Number(member.activeVip) || 0;
+
+        html +=
+          '<div class="member-item">' +
+            '<div class="member-avatar">' +
+              firstLetter +
+            '</div>' +
+            '<div class="member-info">' +
+              '<strong>' +
+                email +
+              '</strong>' +
+              '<span>عضویت: ' +
+                formatDate(member.createdAt) +
+              '</span>' +
+            '</div>' +
+            '<div class="member-vip">VIP ' +
+              vip +
+            '</div>' +
+          '</div>';
+      }
+
+      list.innerHTML = html;
+    }
+
+    function selectLevel(level) {
+      selectedLevel = Number(level);
+      renderMembers();
+    }
+
+    function fallbackCopy(text) {
+      var textarea = document.createElement("textarea");
+
+      textarea.value = text;
+      textarea.setAttribute("readonly", "");
+      textarea.style.position = "fixed";
+      textarea.style.top = "-1000px";
+      textarea.style.opacity = "0";
+
+      document.body.appendChild(textarea);
+      textarea.select();
+
+      try {
+        document.execCommand("copy");
+      } catch (error) {
+        console.error(error);
+      }
+
+      document.body.removeChild(textarea);
+    }
+
+    function copyInviteLink() {
+      var link = document.getElementById("inviteLink").textContent;
+      var feedback = document.getElementById("copyFeedback");
+
+      function success() {
+        feedback.textContent = "لینک دعوت با موفقیت کپی شد.";
+
+        setTimeout(function () {
+          feedback.textContent = "";
+        }, 2500);
+      }
+
+      if (
+        navigator.clipboard &&
+        typeof navigator.clipboard.writeText === "function"
+      ) {
+        navigator.clipboard.writeText(link)
+          .then(success)
+          .catch(function () {
+            fallbackCopy(link);
+            success();
+          });
+      } else {
+        fallbackCopy(link);
+        success();
+      }
+    }
+
+    function showError(message) {
+      var errorBox = document.getElementById("teamError");
+
+      errorBox.style.display = "block";
+      errorBox.textContent = message;
+
+      document.getElementById("inviteLink").textContent =
+        "اطلاعات تیم بارگذاری نشد";
+
+      document.getElementById("memberList").innerHTML =
+        '<div class="empty-team">لطفاً یک‌بار از حساب خارج و دوباره وارد شوید.</div>';
+    }
+
+    function goPage(page) {
+      window.location.href = page;
+    }
+
+    function bindEvents() {
+      var copyButton = document.getElementById("copyButton");
+      var tabs = document.querySelectorAll(".level-tab");
+      var navButtons = document.querySelectorAll(".bottom-nav button");
+
+      copyButton.addEventListener("click", copyInviteLink);
+
+      for (var i = 0; i < tabs.length; i++) {
+        tabs[i].addEventListener("click", function () {
+          selectLevel(this.getAttribute("data-level"));
+        });
+      }
+
+      for (var j = 0; j < navButtons.length; j++) {
+        navButtons[j].addEventListener("click", function () {
+          goPage(this.getAttribute("data-page"));
+        });
+      }
+    }
+
+    function initializeTeam() {
+      try {
+        bindEvents();
+
+        var currentEmail = normalizeEmail(
+          localStorage.getItem(CURRENT_USER_KEY)
+        );
+
+        if (!currentEmail) {
+          window.location.replace("index.html");
+          return;
+        }
+
+        users = loadUsers();
+        migrateUsers();
+
+        for (var i = 0; i < users.length; i++) {
+          if (normalizeEmail(users[i].email) === currentEmail) {
+            currentUser = users[i];
+            break;
+          }
+        }
+
+        if (!currentUser) {
+          localStorage.removeItem(CURRENT_USER_KEY);
+          window.location.replace("index.html");
+          return;
+        }
+
+        buildThreeLevels(currentUser.email);
+        renderSummary();
+        renderMembers();
+      } catch (error) {
+        console.error("خطای صفحه تیم:", error);
+        showError("خطایی هنگام بارگذاری صفحه تیم رخ داد.");
+      }
+    }
+
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", initializeTeam);
+    } else {
+      initializeTeam();
+    }
+  </script>
+  <script src="assets/js/auth-controls.js"></script>
+  <script src="assets/js/wheel-config.js"></script>
+  <script src="assets/js/lucky-wheel.js"></script>
+  <script src="assets/js/i18n.js"></script>
+  <script src="assets/js/v6.js"></script>
+  <script src="assets/js/premium.js"></script>
+</body>
+</html>

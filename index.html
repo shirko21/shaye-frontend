@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>SHAYE | Smart Investment</title>
+
+
+<link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet">
+
+
+<link rel="stylesheet" href="assets/css/style.css">
+
+
+  <link rel="stylesheet" href="assets/css/i18n.css">
+  <link rel="stylesheet" href="assets/css/v6.css">
+  <link rel="stylesheet" href="assets/css/premium.css">
+</head>
+
+
+<body>
+
+
+<!-- Loader -->
+
+<div class="loader" id="loader">
+
+<div class="loader-logo">
+SHAYE
+</div>
+
+<div class="loader-line"></div>
+
+</div>
+
+
+
+<!-- لوگوی محو پس زمینه -->
+
+<div class="background-logo">
+SHAYE
+</div>
+
+
+
+
+<div class="auth-container">
+
+
+
+<!-- برند -->
+
+<div class="brand">
+
+
+<div class="logo">
+S
+</div>
+
+
+<h1>
+SHAYE
+</h1>
+
+
+<p>
+Secure Investment Platform
+</p>
+
+
+</div>
+
+
+
+
+
+<div class="auth-card">
+
+
+
+<!-- پیام ها -->
+
+<div id="message"></div>
+
+
+
+
+
+<!-- تب ها -->
+
+
+<div class="tabs">
+
+
+<button 
+class="tab active"
+onclick="showLogin()">
+
+ورود
+
+</button>
+
+
+
+<button 
+class="tab"
+onclick="showRegister()">
+
+ثبت نام
+
+</button>
+
+
+</div>
+
+
+
+
+
+<!-- فرم ورود -->
+
+<form id="loginForm" class="form active">
+
+
+
+<div class="input-box">
+
+<span>
+📧
+</span>
+
+
+<input
+id="loginEmail"
+type="email"
+placeholder="ایمیل"
+autocomplete="email"
+required>
+
+</div>
+
+
+
+
+<div class="input-box">
+
+
+<span>
+🔒
+</span>
+
+
+<input
+id="loginPassword"
+type="password"
+placeholder="رمز عبور"
+autocomplete="current-password"
+required>
+
+
+<button
+type="button"
+class="eye"
+onclick="togglePassword('loginPassword')">
+
+👁
+
+</button>
+
+
+</div>
+
+
+
+
+
+<button 
+type="submit"
+class="main-btn">
+
+ورود به حساب
+
+</button>
+
+
+
+</form>
+
+
+
+
+
+
+
+
+<!-- فرم ثبت نام -->
+
+
+<form id="registerForm" class="form">
+
+
+
+
+
+<div class="input-box">
+
+<span>
+📧
+</span>
+
+
+<input
+id="registerEmail"
+type="email"
+placeholder="ایمیل"
+autocomplete="email"
+required>
+
+</div>
+
+
+
+
+
+
+<div class="input-box">
+
+
+<span>
+🔒
+</span>
+
+
+<input
+id="registerPassword"
+type="password"
+placeholder="رمز عبور"
+autocomplete="new-password"
+required>
+
+
+<button
+type="button"
+class="eye"
+onclick="togglePassword('registerPassword')">
+
+👁
+
+</button>
+
+
+</div>
+
+
+
+
+
+
+
+<div class="input-box">
+
+
+<span>
+🔒
+</span>
+
+
+<input
+id="confirmPassword"
+type="password"
+placeholder="تکرار رمز عبور"
+autocomplete="new-password"
+required>
+
+
+<button
+type="button"
+class="eye"
+onclick="togglePassword('confirmPassword')">
+
+👁
+
+</button>
+
+
+</div>
+
+
+
+
+
+
+
+<div class="input-box">
+
+<span>
+🎁
+</span>
+
+
+<input
+id="inviteCode"
+type="text"
+placeholder="کد دعوت (اختیاری)"
+autocomplete="off">
+
+
+</div>
+
+
+
+
+
+
+
+<button 
+type="submit"
+class="main-btn">
+
+ساخت حساب
+
+</button>
+
+
+
+
+</form>
+
+
+
+
+
+
+</div>
+
+
+
+
+
+<div class="footer">
+
+© SHAYE 2026
+
+</div>
+
+
+
+
+</div>
+
+
+
+
+
+
+<script src="assets/js/app.js"></script>
+<script src="assets/js/navigation.js"></script>
+
+  <script src="assets/js/i18n.js"></script>
+  <script src="assets/js/v6.js"></script>
+  <script src="assets/js/premium.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#080c0f">
+  <title>برداشت | SHAYE</title>
+  <link rel="stylesheet" href="assets/css/dashboard.css">
+
+  <style>
+    .balance-box {
+      margin-bottom: 16px;
+      padding: 18px;
+      border: 1px solid rgba(42,211,130,.27);
+      border-radius: 16px;
+      background: rgba(42,211,130,.075);
+    }
+
+    .balance-box span {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 11px;
+      opacity: .72;
+    }
+
+    .balance-box strong {
+      display: block;
+      direction: ltr;
+      text-align: right;
+      font-size: 24px;
+      font-weight: 900;
+    }
+
+    .field-help {
+      margin-top: 7px;
+      font-size: 10px;
+      line-height: 1.8;
+      opacity: .6;
+    }
+
+    .network-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 13px;
+      padding: 7px 10px;
+      border: 1px solid rgba(255,255,255,.09);
+      border-radius: 999px;
+      background: rgba(255,255,255,.04);
+      font-size: 11px;
+    }
+
+    .withdraw-message {
+      display: none;
+      margin-top: 14px;
+      padding: 12px;
+      border-radius: 12px;
+      text-align: center;
+      font-size: 12px;
+      line-height: 1.9;
+    }
+
+    .withdraw-message.success {
+      display: block;
+      color: #7ff0b5;
+      border: 1px solid rgba(42,211,130,.25);
+      background: rgba(42,211,130,.08);
+    }
+
+    .withdraw-message.error {
+      display: block;
+      color: #ff9b9b;
+      border: 1px solid rgba(255,107,107,.25);
+      background: rgba(255,107,107,.08);
+    }
+
+    .withdraw-note {
+      margin-top: 13px;
+      font-size: 11px;
+      line-height: 2;
+      opacity: .66;
+    }
+
+    .btn-green[disabled] {
+      cursor: not-allowed;
+      opacity: .55;
+    }
+  </style>
+  <link rel="stylesheet" href="assets/css/lucky-wheel.css">
+  <link rel="stylesheet" href="assets/css/i18n.css">
+  <link rel="stylesheet" href="assets/css/v6.css">
+  <link rel="stylesheet" href="assets/css/premium.css">
+</head>
+
+<body>
+  <header class="main-header">
+    <div class="logo-container">
+      <div class="custom-logo">S</div>
+      <div class="brand-name">SHAYE</div>
+    </div>
+
+    <button type="button" class="logout-button" data-logout>
+      خروج از حساب
+    </button>
+  </header>
+
+  <main class="dashboard-container">
+    <section class="welcome">
+      <h2>برداشت 💸</h2>
+      <p>برداشت مستقیم از موجودی قابل برداشت</p>
+    </section>
+
+    <section class="card">
+      <div class="balance-box">
+        <span>مبلغ قابل برداشت</span>
+        <strong id="availableBalance">0 USDT</strong>
+      </div>
+
+      <div class="network-badge">
+        شبکه برداشت: <strong>BEP20</strong>
+      </div>
+
+      <div class="input-group">
+        <label for="withdrawAmount">مبلغ برداشت</label>
+        <input
+          id="withdrawAmount"
+          type="number"
+          inputmode="decimal"
+          min="0.01"
+          step="0.01"
+          autocomplete="off"
+          placeholder="مبلغ را وارد کنید"
+        >
+        <div class="field-help">
+          مبلغ باید کمتر یا مساوی موجودی قابل برداشت باشد.
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label for="walletAddress">آدرس کیف پول USDT در شبکه BEP20</label>
+        <input
+          id="walletAddress"
+          type="text"
+          dir="ltr"
+          spellcheck="false"
+          autocomplete="off"
+          placeholder="0x..."
+        >
+        <div class="field-help">
+          آدرس BEP20 معمولاً با 0x شروع می‌شود و 42 کاراکتر دارد.
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label for="withdrawPassword">گذرواژه برداشت</label>
+        <input
+          id="withdrawPassword"
+          type="password"
+          autocomplete="current-password"
+          placeholder="همان رمز ورود به حساب"
+        >
+      </div>
+
+      <button type="button" class="btn-green" id="withdrawButton">
+        برداشت
+      </button>
+
+      <div class="withdraw-message" id="withdrawMessage"></div>
+
+      <p class="withdraw-note">
+        این نسخه هنوز آزمایشی و بدون سرور است؛ بنابراین «برداشت مستقیم» در این مرحله
+        به معنی ثبت تراکنش و کم‌شدن مبلغ در حافظه همین مرورگر است و انتقال واقعی USDT
+        روی بلاکچین انجام نمی‌شود.
+      </p>
+    </section>
+  </main>
+
+  <nav class="bottom-nav">
+    <button type="button" data-page="dashboard.html">🏠<br>خانه</button>
+    <button type="button" data-page="wallet.html" class="active">💳<br>کیف پول</button>
+    <button type="button" data-page="team.html">👥<br>تیم</button>
+    <button type="button" data-page="tasks.html">📋<br>وظایف</button>
+    <button type="button" data-page="report.html">📊<br>گزارش</button>
+  </nav>
+
+  <script>
+    "use strict";
+
+    var USERS_KEY = "shaye_users";
+    var CURRENT_USER_KEY = "shaye_current_user";
+
+    var users = [];
+    var currentUser = null;
+    var currentUserIndex = -1;
+    var isSubmitting = false;
+
+    function normalizeEmail(value) {
+      return String(value || "").trim().toLowerCase();
+    }
+
+    function loadUsers() {
+      try {
+        var data = JSON.parse(localStorage.getItem(USERS_KEY)) || [];
+        return Array.isArray(data) ? data : [];
+      } catch (error) {
+        console.error(error);
+        return [];
+      }
+    }
+
+    function saveUsers() {
+      localStorage.setItem(USERS_KEY, JSON.stringify(users));
+    }
+
+    function roundMoney(value) {
+      return Math.round((Number(value) || 0) * 100) / 100;
+    }
+
+    function formatAmount(value) {
+      return roundMoney(value).toLocaleString("en-US", {
+        maximumFractionDigits: 2
+      }) + " USDT";
+    }
+
+    function showMessage(text, type) {
+      var box = document.getElementById("withdrawMessage");
+      box.textContent = text;
+      box.className = "withdraw-message " + type;
+    }
+
+    function clearMessage() {
+      var box = document.getElementById("withdrawMessage");
+      box.textContent = "";
+      box.className = "withdraw-message";
+    }
+
+    function renderBalance() {
+      document.getElementById("availableBalance").textContent =
+        formatAmount(currentUser.withdrawBalance);
+    }
+
+    function isValidBep20Address(address) {
+      return /^0x[a-fA-F0-9]{40}$/.test(address);
+    }
+
+    function setSubmitting(value) {
+      isSubmitting = value;
+
+      var button = document.getElementById("withdrawButton");
+      button.disabled = value;
+      button.textContent = value ? "در حال ثبت..." : "برداشت";
+    }
+
+    function submitWithdrawal() {
+      if (isSubmitting) {
+        return;
+      }
+
+      clearMessage();
+
+      /* Reload latest user data before checking the balance. */
+      users = loadUsers();
+
+      var currentEmail = normalizeEmail(
+        localStorage.getItem(CURRENT_USER_KEY)
+      );
+
+      currentUserIndex = -1;
+
+      for (var i = 0; i < users.length; i++) {
+        if (normalizeEmail(users[i].email) === currentEmail) {
+          currentUserIndex = i;
+          break;
+        }
+      }
+
+      if (currentUserIndex === -1) {
+        showMessage("حساب کاربری پیدا نشد. دوباره وارد شوید.", "error");
+        return;
+      }
+
+      currentUser = users[currentUserIndex];
+
+      var amount = roundMoney(
+        document.getElementById("withdrawAmount").value
+      );
+
+      var address = String(
+        document.getElementById("walletAddress").value || ""
+      ).trim();
+
+      var password = String(
+        document.getElementById("withdrawPassword").value || ""
+      );
+
+      var available = roundMoney(
+        Number(currentUser.withdrawBalance) || 0
+      );
+
+      if (!amount || amount <= 0) {
+        showMessage("لطفاً مبلغ برداشت معتبر وارد کنید.", "error");
+        return;
+      }
+
+      if (amount > available) {
+        showMessage(
+          "مبلغ برداشت بیشتر از موجودی قابل برداشت شماست.",
+          "error"
+        );
+        return;
+      }
+
+      if (!isValidBep20Address(address)) {
+        showMessage(
+          "آدرس کیف پول BEP20 معتبر نیست. آدرس باید با 0x شروع شود و 42 کاراکتر داشته باشد.",
+          "error"
+        );
+        return;
+      }
+
+      if (!password) {
+        showMessage("گذرواژه برداشت را وارد کنید.", "error");
+        return;
+      }
+
+      if (password !== String(currentUser.password || "")) {
+        showMessage("گذرواژه برداشت نادرست است.", "error");
+        return;
+      }
+
+      setSubmitting(true);
+
+      try {
+        currentUser.withdrawBalance = roundMoney(available - amount);
+
+        if (!Array.isArray(currentUser.transactions)) {
+          currentUser.transactions = [];
+        }
+
+        currentUser.transactions.unshift({
+          id:
+            "WDR-" +
+            Date.now() +
+            "-" +
+            Math.floor(Math.random() * 10000),
+
+          type: "withdrawal",
+          title: "برداشت مستقیم USDT",
+          amount: amount,
+          walletAddress: address,
+          network: "BEP20",
+          status: "completed",
+          date: new Date().toISOString()
+        });
+
+        users[currentUserIndex] = currentUser;
+        saveUsers();
+
+        renderBalance();
+
+        document.getElementById("withdrawAmount").value = "";
+        document.getElementById("walletAddress").value = "";
+        document.getElementById("withdrawPassword").value = "";
+
+        showMessage(
+          formatAmount(amount) +
+          " با موفقیت برداشت و در گزارش‌ها ثبت شد.",
+          "success"
+        );
+      } catch (error) {
+        console.error(error);
+        showMessage(
+          "ثبت برداشت با خطا روبه‌رو شد. دوباره تلاش کنید.",
+          "error"
+        );
+      }
+
+      setSubmitting(false);
+    }
+
+    function initialize() {
+      var currentEmail = normalizeEmail(
+        localStorage.getItem(CURRENT_USER_KEY)
+      );
+
+      if (!currentEmail) {
+        window.location.replace("index.html");
+        return;
+      }
+
+      users = loadUsers();
+
+      for (var i = 0; i < users.length; i++) {
+        if (normalizeEmail(users[i].email) === currentEmail) {
+          currentUserIndex = i;
+          currentUser = users[i];
+          break;
+        }
+      }
+
+      if (!currentUser) {
+        localStorage.removeItem(CURRENT_USER_KEY);
+        window.location.replace("index.html");
+        return;
+      }
+
+      if (typeof currentUser.withdrawBalance !== "number") {
+        currentUser.withdrawBalance =
+          Number(currentUser.withdrawableBalance) ||
+          Number(currentUser.balance) ||
+          0;
+      }
+
+      if (!Array.isArray(currentUser.transactions)) {
+        currentUser.transactions = [];
+      }
+
+      renderBalance();
+
+      document.getElementById("withdrawButton")
+        .addEventListener("click", submitWithdrawal);
+
+      document.getElementById("withdrawPassword")
+        .addEventListener("keydown", function (event) {
+          if (event.key === "Enter") {
+            submitWithdrawal();
+          }
+        });
+
+      var navButtons = document.querySelectorAll(".bottom-nav button");
+
+      for (var j = 0; j < navButtons.length; j++) {
+        navButtons[j].addEventListener("click", function () {
+          window.location.href = this.getAttribute("data-page");
+        });
+      }
+    }
+
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", initialize);
+    } else {
+      initialize();
+    }
+  </script>
+
+  <script src="assets/js/auth-controls.js"></script>
+  <script src="assets/js/wheel-config.js"></script>
+  <script src="assets/js/lucky-wheel.js"></script>
+  <script src="assets/js/i18n.js"></script>
+  <script src="assets/js/v6.js"></script>
+  <script src="assets/js/premium.js"></script>
+</body>
+</html>

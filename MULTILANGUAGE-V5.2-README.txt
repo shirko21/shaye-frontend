@@ -1,0 +1,8 @@
+SHAYE V5.2 - Complete live translation improvements
+
+- Expanded translation coverage for static labels, slogans, VIP descriptions, daily profit, prices, remaining amounts, task rules, deposit/withdraw guidance, wheel and admin content.
+- Dynamic text updates are now translated too, including countdowns and values generated after page load.
+- Page titles are translated.
+- English remains the default language.
+- Persian/Arabic use RTL; English/Russian use LTR.
+- The small globe language button remains available on every page.

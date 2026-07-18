@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#080c0f">
+  <title>ثبت‌نام | SHAYE</title>
+  <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/dashboard.css">
+  <style>
+    #message {
+      margin-top: 14px;
+      min-height: 24px;
+      line-height: 1.9;
+      text-align: center;
+    }
+    #message.success { color: #2ad382; }
+    #message.error { color: #ff6b6b; }
+    .invite-note {
+      margin-top: 7px;
+      font-size: 11px;
+      line-height: 1.8;
+      opacity: .68;
+    }
+  </style>
+  <link rel="stylesheet" href="assets/css/i18n.css">
+  <link rel="stylesheet" href="assets/css/v6.css">
+  <link rel="stylesheet" href="assets/css/premium.css">
+</head>
+<body>
+  <main class="login-container">
+    <div class="register-card">
+      <div class="custom-logo">S</div>
+      <h2>ساخت حساب SHAYE</h2>
+      <p>حساب شخصی خود را ایجاد کنید</p>
+
+      <div class="input-group">
+        <label for="email">ایمیل</label>
+        <input id="email" type="email" placeholder="example@gmail.com" autocomplete="email">
+      </div>
+
+      <div class="input-group">
+        <label for="password">رمز عبور</label>
+        <input id="password" type="password" placeholder="رمز عبور" autocomplete="new-password">
+      </div>
+
+      <div class="input-group">
+        <label for="confirmPassword">تکرار رمز عبور</label>
+        <input id="confirmPassword" type="password" placeholder="تکرار رمز عبور" autocomplete="new-password">
+      </div>
+
+      <div class="input-group">
+        <label for="inviteCode">کد دعوت (اختیاری)</label>
+        <input id="inviteCode" type="text" placeholder="کد معرف" autocomplete="off">
+        <div class="invite-note">اگر از لینک دعوت وارد شده باشید، کد به‌صورت خودکار تکمیل می‌شود.</div>
+      </div>
+
+      <button class="btn-green" id="registerButton" type="button" onclick="registerUser()">ثبت نام</button>
+
+      <p class="switch-text">
+        حساب دارید؟
+        <a href="login.html">ورود</a>
+      </p>
+
+      <div id="message"></div>
+    </div>
+  </main>
+
+  <script>
+    "use strict";
+
+    const USERS_KEY = "shaye_users";
+    const CURRENT_USER_KEY = "shaye_current_user";
+
+    function normalizeEmail(value) {
+      return String(value || "").trim().toLowerCase();
+    }
+
+    function loadUsers() {
+      try {
+        const data = JSON.parse(localStorage.getItem(USERS_KEY)) || [];
+        return Array.isArray(data) ? data : [];
+      } catch (error) {
+        console.error(error);
+        return [];
+      }
+    }
+
+    function saveUsers(users) {
+      localStorage.setItem(USERS_KEY, JSON.stringify(users));
+    }
+
+    function createReferralCode(email, users) {
+      const base = normalizeEmail(email)
+        .split("@")[0]
+        .replace(/[^a-zA-Z0-9]/g, "")
+        .slice(0, 6)
+        .toUpperCase() || "USER";
+
+      let code = "";
+      do {
+        code = "SH" + base + Math.floor(1000 + Math.random() * 9000);
+      } while (users.some(user =>
+        String(user.referralCode || "").toUpperCase() === code
+      ));
+
+      return code;
+    }
+
+    function findReferrer(users, enteredCode) {
+      const code = String(enteredCode || "").trim().toUpperCase();
+      if (!code) return null;
+
+      return users.find(user =>
+        String(user.referralCode || "").trim().toUpperCase() === code
+      ) || null;
+    }
+
+    function showMessage(text, type) {
+      const message = document.getElementById("message");
+      message.textContent = text;
+      message.className = type || "";
+    }
+
+    function prefillInviteCode() {
+      const params = new URLSearchParams(window.location.search);
+      const code = params.get("ref") || params.get("invite") || params.get("code");
+
+      if (code) {
+        document.getElementById("inviteCode").value = code.trim().toUpperCase();
+      }
+    }
+
+    function registerUser() {
+      const email = normalizeEmail(document.getElementById("email").value);
+      const password = document.getElementById("password").value;
+      const confirmPassword = document.getElementById("confirmPassword").value;
+      const enteredInviteCode = document.getElementById("inviteCode").value.trim();
+      const button = document.getElementById("registerButton");
+
+      showMessage("", "");
+
+      if (!email || !password || !confirmPassword) {
+        showMessage("لطفاً همه فیلدهای ضروری را پر کنید.", "error");
+        return;
+      }
+
+      if (!email.includes("@")) {
+        showMessage("ایمیل واردشده معتبر نیست.", "error");
+        return;
+      }
+
+      if (password.length < 4) {
+        showMessage("رمز عبور باید حداقل ۴ کاراکتر باشد.", "error");
+        return;
+      }
+
+      if (password !== confirmPassword) {
+        showMessage("رمز عبور و تکرار آن یکسان نیست.", "error");
+        return;
+      }
+
+      const users = loadUsers();
+
+      if (users.some(user => normalizeEmail(user.email) === email)) {
+        showMessage("این ایمیل قبلاً ثبت شده است.", "error");
+        return;
+      }
+
+      const referrer = findReferrer(users, enteredInviteCode);
+
+      if (enteredInviteCode && !referrer) {
+        showMessage("کد دعوت معتبر نیست.", "error");
+        return;
+      }
+
+      button.disabled = true;
+
+      const now = new Date().toISOString();
+      const newUser = {
+        email,
+        password,
+
+        wallet: {
+          address: "",
+          network: "BEP20",
+          status: "pending"
+        },
+
+        investmentBalance: 0,
+        withdrawBalance: 0,
+        activeVip: 0,
+        referralProfit: 0,
+        dailyProfit: 0,
+        transactions: [],
+
+        wheelSpins: 1,
+        wheelSpinsUsed: 0,
+        wheelHistory: [],
+        wheelReferralRewards: [],
+
+        referralCode: createReferralCode(email, users),
+        referredBy: referrer ? normalizeEmail(referrer.email) : "",
+        usedInviteCode: referrer ? String(referrer.referralCode) : "",
+
+        vipActivatedAt: "",
+        vipExpiresAt: "",
+        lastTaskClaimId: "",
+        lastTaskClaimedAt: "",
+        profitDaysClaimed: 0,
+
+        createdAt: now
+      };
+
+      users.push(newUser);
+      saveUsers(users);
+      localStorage.setItem(CURRENT_USER_KEY, email);
+
+      showMessage("ثبت‌نام موفق بود؛ در حال ورود...", "success");
+
+      setTimeout(function () {
+        window.location.href = "dashboard.html";
+      }, 700);
+    }
+
+    document.addEventListener("DOMContentLoaded", prefillInviteCode);
+  </script>
+  <script src="assets/js/i18n.js"></script>
+  <script src="assets/js/v6.js"></script>
+  <script src="assets/js/premium.js"></script>
+</body>
+</html>

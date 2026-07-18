@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#070a0d">
+  <title>مدیریت SHAYE</title>
+  <link rel="stylesheet" href="assets/css/dashboard.css">
+  <style>
+    body{min-height:100vh;padding-bottom:40px}.admin-shell{width:min(920px,calc(100% - 24px));margin:24px auto}.admin-header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px}.admin-title h1{margin:0 0 5px;font-size:23px}.admin-title p{margin:0;font-size:11px;opacity:.65}.admin-badge{padding:7px 10px;border:1px solid rgba(42,211,130,.26);border-radius:999px;color:#76efb1;background:rgba(42,211,130,.07);font-size:10px;font-weight:900}.hidden{display:none!important}.admin-message{display:none;margin-top:12px;padding:11px;border-radius:12px;text-align:center;font-size:12px;line-height:1.8}.admin-message.success{display:block;border:1px solid rgba(42,211,130,.25);background:rgba(42,211,130,.08);color:#7ff0b5}.admin-message.error{display:block;border:1px solid rgba(255,107,107,.25);background:rgba(255,107,107,.08);color:#ff9b9b}.admin-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}.secondary-button,.danger-button{min-height:44px;border-radius:12px;font-family:inherit;font-weight:800;cursor:pointer}.secondary-button{border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.045);color:#fff}.danger-button{border:1px solid rgba(255,107,107,.2);background:rgba(255,107,107,.06);color:#ff9b9b}.tabs{display:flex;gap:8px;overflow:auto;margin-bottom:12px;padding-bottom:3px}.tab{white-space:nowrap;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04);color:#fff;border-radius:12px;padding:10px 13px;font-family:inherit;font-weight:800}.tab.active{border-color:rgba(42,211,130,.4);background:rgba(42,211,130,.1);color:#85f2bd}.tab-page{display:none}.tab-page.active{display:block}.vip-row{display:grid;grid-template-columns:75px 1fr 1fr;gap:9px;align-items:end;padding:12px 0;border-bottom:1px solid rgba(255,255,255,.07)}.small-label{display:block;margin-bottom:6px;font-size:10px;opacity:.65}.prize-row{display:grid;grid-template-columns:1.2fr 1.2fr .7fr .7fr auto auto;gap:8px;align-items:end;padding:12px 0;border-bottom:1px solid rgba(255,255,255,.07)}.switch-line{display:flex;align-items:center;gap:8px}.compact{min-height:40px!important}.history-row,.user-row{padding:11px;border:1px solid rgba(255,255,255,.07);border-radius:12px;background:rgba(255,255,255,.025);margin-top:8px;font-size:11px;line-height:1.9}.history-row strong,.user-row strong{display:block;font-size:12px}.mini-actions{display:flex;gap:7px;margin-top:8px;flex-wrap:wrap}.mini-actions button{min-height:34px;padding:0 11px}.security-note{margin-top:14px;padding:12px;border:1px solid rgba(255,193,7,.2);border-radius:13px;background:rgba(255,193,7,.055);font-size:11px;line-height:2;opacity:.82}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}.muted{opacity:.65;font-size:10px;line-height:1.8}.section-gap{margin-top:12px}@media(max-width:700px){.vip-row,.prize-row,.grid2{grid-template-columns:1fr}.admin-actions{grid-template-columns:1fr}.prize-row{padding:14px 0}.admin-header{align-items:flex-start}}
+  .stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.stat-card{padding:14px;border:1px solid rgba(255,255,255,.08);border-radius:14px;background:rgba(255,255,255,.03)}.stat-card b{display:block;font-size:20px;margin-top:6px;color:#79efb4}.announcement-row{padding:12px;border:1px solid rgba(255,255,255,.08);border-radius:13px;margin-top:9px;background:rgba(255,255,255,.025)}.announcement-preview{max-width:160px;max-height:110px;border-radius:10px;margin-top:8px}.full{width:100%}.checkbox-line{display:flex;align-items:center;gap:8px;min-height:42px}.user-admin-grid{display:grid;grid-template-columns:1.4fr .8fr .8fr auto;gap:8px;align-items:end}.preview-box{display:none;margin-top:10px;padding:14px;border:1px dashed rgba(42,211,130,.3);border-radius:14px}.preview-box.show{display:block}@media(max-width:700px){.stat-grid,.user-admin-grid{grid-template-columns:1fr}}
+  </style>
+  <link rel="stylesheet" href="assets/css/i18n.css">
+  <link rel="stylesheet" href="assets/css/v6.css">
+  <link rel="stylesheet" href="assets/css/premium.css">
+</head>
+<body>
+<main class="admin-shell">
+  <header class="admin-header"><div class="admin-title"><h1>پنل مدیریت SHAYE</h1><p>مدیریت آمار، VIP، گردونه، پیام‌ها و کاربران در یک صفحه</p></div><div class="admin-badge">ADMIN</div></header>
+
+  <section class="card" id="setupPanel">
+    <h2 class="section-title">راه‌اندازی مدیر</h2>
+    <div class="input-group"><label>نام کاربری مدیر</label><input id="setupUsername" type="text" autocomplete="off"></div>
+    <div class="input-group"><label>رمز عبور مدیر</label><input id="setupPassword" type="password" autocomplete="new-password"></div>
+    <div class="input-group"><label>تکرار رمز</label><input id="setupConfirm" type="password" autocomplete="new-password"></div>
+    <button class="btn-green" id="createAdminButton" type="button">ساخت حساب مدیر</button><div class="admin-message" id="setupMessage"></div>
+  </section>
+
+  <section class="card hidden" id="loginPanel">
+    <h2 class="section-title">ورود مدیر</h2>
+    <div class="input-group"><label>نام کاربری</label><input id="loginUsername" type="text"></div>
+    <div class="input-group"><label>رمز عبور</label><input id="loginPassword" type="password"></div>
+    <button class="btn-green" id="adminLoginButton" type="button">ورود به مدیریت</button><div class="admin-message" id="loginMessage"></div>
+  </section>
+
+  <section class="hidden" id="adminPanel">
+    <div class="tabs">
+      <button class="tab active" data-tab="overviewPage">آمار کلی</button>
+      <button class="tab" data-tab="vipPage">VIP و سود</button>
+      <button class="tab" data-tab="wheelPage">مدیریت گردونه</button>
+      <button class="tab" data-tab="usersPage">فرصت کاربران</button>
+      <button class="tab" data-tab="historyPage">تاریخچه گردونه</button>
+      <button class="tab" data-tab="announcementPage">پیام و تصویر</button>
+      <button class="tab" data-tab="accountPage">مدیریت حساب‌ها</button>
+      <button class="tab" data-tab="securityPage">امنیت</button>
+    </div>
+
+    <section class="tab-page active" id="overviewPage"><section class="card">
+      <h2 class="section-title">داشبورد آماری</h2><div class="stat-grid" id="statsGrid"></div>
+      <button class="secondary-button full" id="refreshStatsButton" type="button" style="margin-top:12px">به‌روزرسانی آمار</button>
+    </section></section>
+
+    <section class="tab-page" id="vipPage"><section class="card">
+      <h2 class="section-title">تنظیم سطوح VIP و سود روزانه</h2><div id="vipSettings"></div>
+      <div class="input-group"><label for="cycleDays">مدت دوره سوددهی</label><input id="cycleDays" type="number" min="1" step="1"></div>
+      <div class="admin-actions"><button class="btn-green" id="saveSettingsButton" type="button">ذخیره تنظیمات</button><button class="secondary-button" id="resetSettingsButton" type="button">بازگردانی پیش‌فرض</button></div>
+      <div class="admin-message" id="settingsMessage"></div>
+    </section></section>
+
+    <section class="tab-page" id="wheelPage"><section class="card">
+      <h2 class="section-title">تنظیمات عمومی گردونه</h2>
+      <div class="grid2">
+        <div class="input-group"><label>وضعیت گردونه</label><label class="switch-line"><input id="wheelEnabled" type="checkbox"> فعال باشد</label></div>
+        <div class="input-group"><label>مدت چرخش (میلی‌ثانیه)</label><input id="spinDuration" type="number" min="1000" step="500"></div>
+        <div class="input-group"><label>فرصت اولیه ثبت‌نام</label><input id="registrationSpins" type="number" min="0" step="1"></div>
+        <div class="input-group"><label>فرصت دعوت مستقیم</label><input id="referralSpins" type="number" min="0" step="1"></div>
+      </div>
+      <div class="input-group"><label>متن توضیح داخل گردونه</label><textarea id="wheelNotice" rows="3"></textarea></div>
+      <h2 class="section-title section-gap">جایزه‌ها</h2>
+      <p class="muted">جایزه فعال با وزن صفر داخل گردونه دیده می‌شود اما برنده نخواهد شد.</p>
+      <div id="prizeSettings"></div>
+      <button class="secondary-button" id="addPrizeButton" type="button" style="width:100%;margin-top:10px">افزودن جایزه</button>
+      <div class="admin-actions"><button class="btn-green" id="saveWheelButton" type="button">ذخیره تنظیمات گردونه</button><button class="secondary-button" id="resetWheelButton" type="button">پیش‌فرض گردونه</button></div>
+      <div class="admin-message" id="wheelMessage"></div>
+    </section></section>
+
+    <section class="tab-page" id="usersPage"><section class="card">
+      <h2 class="section-title">مدیریت فرصت کاربران</h2>
+      <div class="input-group"><label>جستجوی ایمیل</label><input id="userSearch" type="text" placeholder="email@example.com"></div>
+      <div id="userList"></div><div class="admin-message" id="usersMessage"></div>
+    </section></section>
+
+    <section class="tab-page" id="historyPage"><section class="card">
+      <h2 class="section-title">تاریخچه گردونه</h2>
+      <div class="grid2"><div class="input-group"><label>جستجوی کاربر یا جایزه</label><input id="historySearch" type="text"></div><div class="input-group"><label>حداکثر رکورد</label><input id="historyLimit" type="number" min="10" max="500" value="100"></div></div>
+      <button class="secondary-button" id="refreshHistoryButton" type="button" style="width:100%">به‌روزرسانی تاریخچه</button>
+      <div id="historyList"></div>
+    </section></section>
+
+    <section class="tab-page" id="announcementPage"><section class="card">
+      <h2 class="section-title">پیام پاپ‌آپ صفحه خانه</h2>
+      <p class="muted">این پیام بعد از ورود یا ثبت‌نام و هر بار بازگشت کاربر به صفحه خانه نمایش داده می‌شود. ضربدر فقط همان نمایش را می‌بندد.</p>
+      <div class="grid2"><div class="input-group"><label>عنوان</label><input id="annTitle" type="text" placeholder="اطلاعیه مهم"></div><div class="input-group"><label>اولویت نمایش</label><input id="annPriority" type="number" value="0"></div></div>
+      <div class="input-group"><label>متن پیام</label><textarea id="annText" rows="5" placeholder="متن پشتیبانی یا اطلاعیه..."></textarea></div>
+      <div class="grid2"><div class="input-group"><label>آدرس تصویر</label><input id="annImageUrl" type="text" placeholder="https://..."></div><div class="input-group"><label>یا انتخاب تصویر از دستگاه</label><input id="annImageFile" type="file" accept="image/*"></div></div>
+      <div class="grid2"><div class="input-group"><label>متن دکمه اختیاری</label><input id="annActionText" type="text" placeholder="ارتباط با پشتیبانی"></div><div class="input-group"><label>لینک دکمه</label><input id="annActionUrl" type="text" placeholder="https://..."></div></div>
+      <div class="grid2"><div class="input-group"><label>شروع نمایش (اختیاری)</label><input id="annStart" type="datetime-local"></div><div class="input-group"><label>پایان نمایش (اختیاری)</label><input id="annEnd" type="datetime-local"></div></div>
+      <label class="checkbox-line"><input id="annActive" type="checkbox" checked> پیام فعال باشد</label>
+      <div class="admin-actions"><button class="btn-green" id="saveAnnouncementButton" type="button">ثبت پیام</button><button class="secondary-button" id="previewAnnouncementButton" type="button">پیش‌نمایش</button></div>
+      <div class="preview-box" id="announcementPreview"></div><div class="admin-message" id="announcementMessage"></div>
+      <h2 class="section-title section-gap">پیام‌های ثبت‌شده</h2><div id="announcementList"></div>
+    </section></section>
+
+    <section class="tab-page" id="accountPage"><section class="card">
+      <h2 class="section-title">مدیریت حساب کاربران</h2>
+      <div class="input-group"><label>جستجو با ایمیل</label><input id="accountSearch" type="text" placeholder="email@example.com"></div>
+      <div id="accountList"></div><div class="admin-message" id="accountMessage"></div>
+    </section></section>
+
+    <section class="tab-page" id="securityPage"><section class="card">
+      <h2 class="section-title">امنیت مدیریت</h2>
+      <div class="input-group"><label>رمز جدید مدیر</label><input id="newAdminPassword" type="password" placeholder="حداقل ۶ کاراکتر"></div>
+      <button class="secondary-button" id="changePasswordButton" type="button" style="width:100%">تغییر رمز مدیر</button>
+      <button class="danger-button" id="adminLogoutButton" type="button" style="width:100%;margin-top:10px">خروج از پنل مدیریت</button>
+      <div class="admin-message" id="securityMessage"></div>
+    </section></section>
+
+    <div class="security-note">این نسخه با LocalStorage کار می‌کند و برای آزمایش مناسب است. برای انتشار واقعی، ورود مدیر، موجودی‌ها، جایزه‌ها و تاریخچه باید روی بک‌اند امن ذخیره شوند.</div>
+  </section>
+</main>
+<script src="assets/js/config.js"></script>
+<script src="assets/js/wheel-config.js"></script>
+<script>
+"use strict";
+var ADMIN_ACCOUNT_KEY="shaye_admin_account",ADMIN_SESSION_KEY="shaye_admin_session",USERS_KEY="shaye_users";
+function $(id){return document.getElementById(id)}
+function esc(v){return String(v||"").replace(/[&<>"']/g,function(c){return({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"})[c]})}
+function getAdminAccount(){try{var r=localStorage.getItem(ADMIN_ACCOUNT_KEY);return r?JSON.parse(r):null}catch(e){return null}}
+function getUsers(){try{var a=JSON.parse(localStorage.getItem(USERS_KEY)||"[]");return Array.isArray(a)?a:[]}catch(e){return[]}}
+function saveUsers(a){localStorage.setItem(USERS_KEY,JSON.stringify(a))}
+function msg(id,text,type){var e=$(id);e.textContent=text;e.className="admin-message "+type}
+function clear(id){var e=$(id);e.textContent="";e.className="admin-message"}
+function showOnly(id){["setupPanel","loginPanel","adminPanel"].forEach(function(x){$(x).classList.add("hidden")});$(id).classList.remove("hidden")}
+function createAdmin(){clear("setupMessage");var u=$("setupUsername").value.trim(),p=$("setupPassword").value,c=$("setupConfirm").value;if(u.length<3)return msg("setupMessage","نام کاربری حداقل ۳ کاراکتر باشد.","error");if(p.length<6)return msg("setupMessage","رمز حداقل ۶ کاراکتر باشد.","error");if(p!==c)return msg("setupMessage","تکرار رمز یکسان نیست.","error");localStorage.setItem(ADMIN_ACCOUNT_KEY,JSON.stringify({username:u,password:p,createdAt:new Date().toISOString()}));localStorage.setItem(ADMIN_SESSION_KEY,"active");openAdmin()}
+function loginAdmin(){clear("loginMessage");var a=getAdminAccount();if(!a||$("loginUsername").value.trim()!==String(a.username||"")||$("loginPassword").value!==String(a.password||""))return msg("loginMessage","نام کاربری یا رمز نادرست است.","error");localStorage.setItem(ADMIN_SESSION_KEY,"active");openAdmin()}
+function renderVip(){var s=ShayeConfig.load(),h="";for(var v=1;v<=5;v++)h+='<div class="vip-row"><strong>VIP '+v+'</strong><div><label class="small-label">حداقل سرمایه (USDT)</label><input id="vipAmount'+v+'" type="number" min="0" step="0.01" value="'+s.vipAmounts[v]+'"></div><div><label class="small-label">سود روزانه (%)</label><input id="vipRate'+v+'" type="number" min="0" step="0.01" value="'+s.vipDailyRates[v]+'"></div></div>';$("vipSettings").innerHTML=h;$("cycleDays").value=s.cycleDays}
+function saveVip(){clear("settingsMessage");var s=ShayeConfig.load(),prev=0;for(var v=1;v<=5;v++){s.vipAmounts[v]=Number($("vipAmount"+v).value);s.vipDailyRates[v]=Number($("vipRate"+v).value);if(!isFinite(s.vipAmounts[v])||s.vipAmounts[v]<=prev)return msg("settingsMessage","مبلغ هر VIP باید از سطح قبلی بیشتر باشد.","error");if(!isFinite(s.vipDailyRates[v])||s.vipDailyRates[v]<0)return msg("settingsMessage","سود روزانه نامعتبر است.","error");prev=s.vipAmounts[v]}s.cycleDays=Number($("cycleDays").value);if(!isFinite(s.cycleDays)||s.cycleDays<1)return msg("settingsMessage","مدت دوره نامعتبر است.","error");ShayeConfig.save(s);renderVip();msg("settingsMessage","تنظیمات VIP ذخیره شد.","success")}
+var wheelDraft=null;
+function renderWheel(){wheelDraft=ShayeWheelConfig.load();$("wheelEnabled").checked=wheelDraft.enabled;$("spinDuration").value=wheelDraft.spinDuration;$("registrationSpins").value=wheelDraft.registrationSpins;$("referralSpins").value=wheelDraft.referralSpins;$("wheelNotice").value=wheelDraft.notice;renderPrizes()}
+function renderPrizes(){var h="";wheelDraft.prizes.forEach(function(p,i){h+='<div class="prize-row" data-i="'+i+'"><div><label class="small-label">نام جایزه</label><input class="prize-text" value="'+esc(p.text)+'"></div><div><label class="small-label">زیرنویس</label><input class="prize-sub" value="'+esc(p.sub)+'"></div><div><label class="small-label">مبلغ USDT</label><input class="prize-amount" type="number" min="0" step="0.01" value="'+p.amount+'"></div><div><label class="small-label">وزن شانس</label><input class="prize-weight" type="number" min="0" step="0.1" value="'+p.weight+'"></div><label class="switch-line"><input class="prize-active" type="checkbox" '+(p.active?'checked':'')+'> فعال</label><button class="danger-button compact remove-prize" type="button">حذف</button></div>'});$("prizeSettings").innerHTML=h;Array.prototype.forEach.call(document.querySelectorAll(".remove-prize"),function(b){b.onclick=function(){if(wheelDraft.prizes.length<=2)return msg("wheelMessage","حداقل دو بخش برای گردونه لازم است.","error");wheelDraft.prizes.splice(Number(this.parentNode.getAttribute("data-i")),1);renderPrizes()}})}
+function collectWheel(){var rows=document.querySelectorAll(".prize-row"),p=[];Array.prototype.forEach.call(rows,function(r,i){p.push({id:(wheelDraft.prizes[i]&&wheelDraft.prizes[i].id)||("p"+Date.now()+i),text:r.querySelector(".prize-text").value.trim(),sub:r.querySelector(".prize-sub").value.trim(),amount:Number(r.querySelector(".prize-amount").value)||0,weight:Number(r.querySelector(".prize-weight").value)||0,active:r.querySelector(".prize-active").checked})});return{enabled:$("wheelEnabled").checked,spinDuration:Number($("spinDuration").value),registrationSpins:Number($("registrationSpins").value),referralSpins:Number($("referralSpins").value),notice:$("wheelNotice").value.trim(),prizes:p}}
+function saveWheel(){clear("wheelMessage");var c=collectWheel();if(c.spinDuration<1000)return msg("wheelMessage","مدت چرخش حداقل ۱۰۰۰ میلی‌ثانیه باشد.","error");if(c.prizes.length<2)return msg("wheelMessage","حداقل دو جایزه لازم است.","error");if(c.prizes.some(function(p){return !p.text}))return msg("wheelMessage","نام جایزه نمی‌تواند خالی باشد.","error");if(!c.prizes.some(function(p){return p.active&&p.weight>0}))return msg("wheelMessage","حداقل یک جایزه فعال با وزن بیشتر از صفر لازم است.","error");ShayeWheelConfig.save(c);renderWheel();msg("wheelMessage","تنظیمات گردونه ذخیره شد. صفحات کاربر را تازه‌سازی کنید.","success")}
+function renderUsers(){var q=$("userSearch").value.trim().toLowerCase(),a=getUsers().filter(function(u){return !q||String(u.email||"").toLowerCase().indexOf(q)>=0}).slice(0,100),h="";a.forEach(function(u){h+='<div class="user-row"><strong>'+esc(u.email)+'</strong>فرصت باقی‌مانده: <b>'+Number(u.wheelSpins||0)+'</b> | استفاده‌شده: <b>'+Number(u.wheelSpinsUsed||0)+'</b><div class="mini-actions"><button class="secondary-button add-spin" data-email="'+esc(u.email)+'" type="button">+۱ فرصت</button><button class="secondary-button remove-spin" data-email="'+esc(u.email)+'" type="button">−۱ فرصت</button><button class="danger-button reset-spin" data-email="'+esc(u.email)+'" type="button">صفرکردن</button></div></div>'});$("userList").innerHTML=h||'<p class="muted">کاربری پیدا نشد.</p>';Array.prototype.forEach.call(document.querySelectorAll("[data-email]"),function(b){b.onclick=function(){var email=this.getAttribute("data-email"),users=getUsers(),i=users.findIndex(function(u){return String(u.email||"")===email});if(i<0)return;var n=Number(users[i].wheelSpins)||0;if(this.classList.contains("add-spin"))n++;else if(this.classList.contains("remove-spin"))n=Math.max(0,n-1);else n=0;users[i].wheelSpins=n;saveUsers(users);renderUsers();msg("usersMessage","فرصت کاربر به‌روزرسانی شد.","success")}})}
+function renderHistory(){var q=$("historySearch").value.trim().toLowerCase(),limit=Math.max(10,Math.min(500,Number($("historyLimit").value)||100)),rows=[];getUsers().forEach(function(u){(Array.isArray(u.wheelHistory)?u.wheelHistory:[]).forEach(function(x){rows.push({email:u.email,date:x.date,text:x.rewardText||((x.reward||0)+" USDT"),amount:Number(x.reward)||0,status:x.status||"completed",id:x.id})})});rows.sort(function(a,b){return String(b.date).localeCompare(String(a.date))});rows=rows.filter(function(x){return !q||(String(x.email)+" "+String(x.text)).toLowerCase().indexOf(q)>=0}).slice(0,limit);$("historyList").innerHTML=rows.map(function(x){return '<div class="history-row"><strong>'+esc(x.text)+'</strong>کاربر: '+esc(x.email)+'<br>مبلغ: '+x.amount+' USDT | وضعیت: '+esc(x.status)+'<br><span class="muted">'+esc(new Date(x.date).toLocaleString("fa-IR"))+'</span></div>'}).join("")||'<p class="muted">رکوردی وجود ندارد.</p>'}
+
+var ANN_KEY="shaye_announcements",annImageData="";
+function getAnnouncements(){try{var a=JSON.parse(localStorage.getItem(ANN_KEY)||"[]");return Array.isArray(a)?a:[]}catch(e){return[]}}
+function saveAnnouncements(a){localStorage.setItem(ANN_KEY,JSON.stringify(a))}
+function renderStats(){var u=getUsers(),totalInv=0,totalWd=0,totalWheel=0,blocked=0,vips=[0,0,0,0,0,0];u.forEach(function(x){totalInv+=Number(x.investmentBalance)||0;totalWd+=Number(x.withdrawBalance)||0;totalWheel+=(Array.isArray(x.wheelHistory)?x.wheelHistory:[]).reduce(function(t,h){return t+(Number(h.reward)||0)},0);if(x.blocked)blocked++;var v=Math.max(0,Math.min(5,Number(x.activeVip)||0));vips[v]++});var cards=[["کل کاربران",u.length],["کاربران مسدود",blocked],["مجموع سرمایه",totalInv.toFixed(2)+" USDT"],["موجودی قابل برداشت",totalWd.toFixed(2)+" USDT"],["جوایز گردونه",totalWheel.toFixed(2)+" USDT"],["VIP فعال",(u.length-vips[0])+" کاربر"]];$("statsGrid").innerHTML=cards.map(function(x){return '<div class="stat-card"><span>'+x[0]+'</span><b>'+x[1]+'</b></div>'}).join("")}
+function clearAnnouncementForm(){["annTitle","annText","annImageUrl","annActionText","annActionUrl","annStart","annEnd"].forEach(function(id){$(id).value=""});$("annPriority").value=0;$("annActive").checked=true;$("annImageFile").value="";annImageData="";$("announcementPreview").className="preview-box"}
+function announcementFromForm(){return{id:"a"+Date.now(),title:$("annTitle").value.trim(),text:$("annText").value.trim(),image:annImageData||$("annImageUrl").value.trim(),actionText:$("annActionText").value.trim(),actionUrl:$("annActionUrl").value.trim(),startAt:$("annStart").value?new Date($("annStart").value).toISOString():"",endAt:$("annEnd").value?new Date($("annEnd").value).toISOString():"",priority:Number($("annPriority").value)||0,active:$("annActive").checked,createdAt:new Date().toISOString()}}
+function previewAnnouncement(){var a=announcementFromForm(),h="";if(a.title)h+="<strong>"+esc(a.title)+"</strong><br>";if(a.image)h+='<img class="announcement-preview" src="'+esc(a.image)+'"><br>';if(a.text)h+='<span style="white-space:pre-wrap">'+esc(a.text)+'</span>';if(!a.image&&!a.text)return msg("announcementMessage","حداقل متن یا تصویر وارد کنید.","error");$("announcementPreview").innerHTML=h;$("announcementPreview").className="preview-box show"}
+function addAnnouncement(){clear("announcementMessage");var a=announcementFromForm();if(!a.text&&!a.image)return msg("announcementMessage","حداقل متن یا تصویر لازم است.","error");if(a.actionText&&!a.actionUrl)return msg("announcementMessage","برای دکمه، لینک را نیز وارد کنید.","error");var all=getAnnouncements();all.push(a);saveAnnouncements(all);clearAnnouncementForm();renderAnnouncements();msg("announcementMessage","پیام ذخیره شد و در صفحه خانه نمایش داده می‌شود.","success")}
+function renderAnnouncements(){var a=getAnnouncements().sort(function(x,y){return String(y.createdAt).localeCompare(String(x.createdAt))});$("announcementList").innerHTML=a.map(function(x){return '<div class="announcement-row"><strong>'+esc(x.title||"پیام بدون عنوان")+'</strong><br><span class="muted">'+(x.active?"فعال":"غیرفعال")+' | اولویت '+Number(x.priority||0)+'</span>'+(x.image?'<br><img class="announcement-preview" src="'+esc(x.image)+'">':'')+(x.text?'<div style="margin-top:7px">'+esc(x.text).slice(0,180)+'</div>':'')+'<div class="mini-actions"><button class="secondary-button toggle-ann" data-id="'+x.id+'">'+(x.active?"غیرفعال‌کردن":"فعال‌کردن")+'</button><button class="danger-button delete-ann" data-id="'+x.id+'">حذف</button></div></div>'}).join("")||'<p class="muted">پیامی ثبت نشده است.</p>';Array.prototype.forEach.call(document.querySelectorAll(".toggle-ann,.delete-ann"),function(b){b.onclick=function(){var all=getAnnouncements(),id=this.getAttribute("data-id"),i=all.findIndex(function(x){return x.id===id});if(i<0)return;if(this.classList.contains("delete-ann")){if(!confirm("این پیام حذف شود؟"))return;all.splice(i,1)}else all[i].active=!all[i].active;saveAnnouncements(all);renderAnnouncements()}})}
+function renderAccountUsers(){var q=$("accountSearch").value.trim().toLowerCase(),a=getUsers().filter(function(u){return !q||String(u.email||"").toLowerCase().indexOf(q)>=0}).slice(0,100);$("accountList").innerHTML=a.map(function(u){return '<div class="user-row"><strong>'+esc(u.email)+'</strong><div class="user-admin-grid"><div><label class="small-label">سرمایه</label><input class="ua-invest" data-email="'+esc(u.email)+'" value="'+Number(u.investmentBalance||0)+'" type="number" min="0" step="0.01"></div><div><label class="small-label">برداشت</label><input class="ua-withdraw" data-email="'+esc(u.email)+'" value="'+Number(u.withdrawBalance||0)+'" type="number" min="0" step="0.01"></div><div><label class="small-label">VIP</label><input class="ua-vip" data-email="'+esc(u.email)+'" value="'+Number(u.activeVip||0)+'" type="number" min="0" max="5" step="1"></div><button class="secondary-button save-user" data-email="'+esc(u.email)+'">ذخیره</button></div><div class="mini-actions"><button class="'+(u.blocked?'secondary-button':'danger-button')+' toggle-block" data-email="'+esc(u.email)+'">'+(u.blocked?'رفع مسدودی':'مسدودکردن')+'</button></div></div>'}).join("")||'<p class="muted">کاربری پیدا نشد.</p>';Array.prototype.forEach.call(document.querySelectorAll(".save-user,.toggle-block"),function(b){b.onclick=function(){var email=this.getAttribute("data-email"),users=getUsers(),i=users.findIndex(function(x){return String(x.email||"")===email});if(i<0)return;if(this.classList.contains("toggle-block")){users[i].blocked=!users[i].blocked}else{var row=this.closest(".user-row");users[i].investmentBalance=Math.max(0,Number(row.querySelector(".ua-invest").value)||0);users[i].withdrawBalance=Math.max(0,Number(row.querySelector(".ua-withdraw").value)||0);users[i].activeVip=Math.max(0,Math.min(5,Number(row.querySelector(".ua-vip").value)||0))}saveUsers(users);renderAccountUsers();renderStats();msg("accountMessage","اطلاعات کاربر ذخیره شد.","success")}})}
+
+function changePassword(){clear("securityMessage");var p=$("newAdminPassword").value,a=getAdminAccount();if(p.length<6)return msg("securityMessage","رمز حداقل ۶ کاراکتر باشد.","error");a.password=p;a.updatedAt=new Date().toISOString();localStorage.setItem(ADMIN_ACCOUNT_KEY,JSON.stringify(a));$("newAdminPassword").value="";msg("securityMessage","رمز مدیر تغییر کرد.","success")}
+function openAdmin(){showOnly("adminPanel");renderStats();renderVip();renderWheel();renderUsers();renderHistory();renderAnnouncements();renderAccountUsers()}
+function init(){var a=getAdminAccount(),s=localStorage.getItem(ADMIN_SESSION_KEY);if(!a)showOnly("setupPanel");else if(s==="active")openAdmin();else showOnly("loginPanel");$("createAdminButton").onclick=createAdmin;$("adminLoginButton").onclick=loginAdmin;$("saveSettingsButton").onclick=saveVip;$("resetSettingsButton").onclick=function(){if(confirm("تنظیمات VIP بازگردانی شود؟")){ShayeConfig.save(ShayeConfig.defaults);renderVip();msg("settingsMessage","پیش‌فرض بازگردانی شد.","success")}};$("saveWheelButton").onclick=saveWheel;$("resetWheelButton").onclick=function(){if(confirm("تنظیمات گردونه بازگردانی شود؟")){ShayeWheelConfig.reset();renderWheel();msg("wheelMessage","پیش‌فرض گردونه بازگردانی شد.","success")}};$("addPrizeButton").onclick=function(){wheelDraft.prizes.push({id:"p"+Date.now(),text:"جایزه جدید",sub:"",amount:0,weight:1,active:true});renderPrizes()};$("userSearch").oninput=renderUsers;$("refreshHistoryButton").onclick=renderHistory;$("historySearch").oninput=renderHistory;$("changePasswordButton").onclick=changePassword;$("adminLogoutButton").onclick=function(){localStorage.removeItem(ADMIN_SESSION_KEY);showOnly("loginPanel")};$("refreshStatsButton").onclick=renderStats;$("saveAnnouncementButton").onclick=addAnnouncement;$("previewAnnouncementButton").onclick=previewAnnouncement;$("annImageFile").onchange=function(){var f=this.files&&this.files[0];if(!f)return;if(f.size>1500000){this.value="";return msg("announcementMessage","حجم تصویر باید کمتر از ۱.۵ مگابایت باشد.","error")}var r=new FileReader();r.onload=function(){annImageData=String(r.result||"");previewAnnouncement()};r.readAsDataURL(f)};$("accountSearch").oninput=renderAccountUsers;Array.prototype.forEach.call(document.querySelectorAll(".tab"),function(t){t.onclick=function(){document.querySelector(".tab.active").classList.remove("active");document.querySelector(".tab-page.active").classList.remove("active");this.classList.add("active");$(this.getAttribute("data-tab")).classList.add("active")}})}
+if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init);else init();
+</script>
+  <script src="assets/js/i18n.js"></script>
+  <script src="assets/js/v6.js"></script>
+  <script src="assets/js/premium.js"></script>
+</body>
+</html>

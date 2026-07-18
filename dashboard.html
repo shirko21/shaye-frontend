@@ -1,0 +1,1011 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+  >
+
+  <meta name="theme-color" content="#070a0d">
+
+  <title>داشبورد | SHAYE</title>
+
+  <link
+    href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css"
+    rel="stylesheet"
+  >
+
+  <link rel="stylesheet" href="assets/css/theme.css">
+  <link rel="stylesheet" href="assets/css/dashboard.css">
+
+  <style>
+    .account-summary-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .account-summary-card {
+      position: relative;
+      overflow: hidden;
+      padding: 16px;
+    }
+
+    .account-summary-card::after {
+      content: "";
+      position: absolute;
+      width: 85px;
+      height: 85px;
+      left: -28px;
+      bottom: -35px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.045);
+      pointer-events: none;
+    }
+
+    .account-summary-label {
+      margin-bottom: 9px;
+      font-size: 12px;
+      opacity: 0.68;
+    }
+
+    .account-summary-value {
+      font-size: 20px;
+      font-weight: 900;
+      direction: ltr;
+      text-align: right;
+      word-break: break-word;
+    }
+
+    .account-summary-note {
+      margin-top: 7px;
+      font-size: 10px;
+      line-height: 1.8;
+      opacity: 0.58;
+    }
+
+    .current-vip-card {
+      margin-bottom: 16px;
+    }
+
+    .current-vip-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 88px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: rgba(0, 200, 83, 0.13);
+      border: 1px solid rgba(105, 240, 174, 0.22);
+      color: #69f0ae;
+      font-size: 14px;
+      font-weight: 900;
+    }
+
+    .vip-progress-wrap {
+      margin-top: 14px;
+    }
+
+    .vip-progress-track {
+      width: 100%;
+      height: 11px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .vip-progress-fill {
+      width: 0;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(
+        90deg,
+        #00c853,
+        #69f0ae
+      );
+      transition: width 0.35s ease;
+    }
+
+    .vip-progress-text {
+      margin-top: 9px;
+      font-size: 12px;
+      line-height: 1.9;
+      opacity: 0.78;
+    }
+
+    .vip-card {
+      position: relative;
+      cursor: pointer;
+    }
+
+    .vip-card.active-vip {
+      border: 1px solid rgba(105, 240, 174, 0.6);
+      box-shadow: 0 0 0 1px rgba(105, 240, 174, 0.08);
+    }
+
+    .vip-card.active-vip::before {
+      content: "فعال";
+      position: absolute;
+      top: 9px;
+      left: 9px;
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: #00c853;
+      color: #061209;
+      font-size: 9px;
+      font-weight: 900;
+    }
+
+    .vip-card.locked-vip {
+      opacity: 1;
+    }
+
+    .vip-card button {
+      cursor: pointer;
+    }
+
+    .vip-modal-action {
+      width: 100%;
+      margin-top: 12px;
+    }
+
+    .modal-status-text {
+      margin-top: 10px;
+      font-size: 12px;
+      line-height: 1.9;
+      text-align: center;
+      opacity: 0.72;
+    }
+
+    @media (max-width: 430px) {
+      .account-summary-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  
+    .vip-card {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .vip-card.locked-vip::after {
+      content: "🔒";
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      width: 31px;
+      height: 31px;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(255,255,255,.16);
+      border-radius: 50%;
+      background: rgba(7,10,13,.86);
+      font-size: 16px;
+      z-index: 4;
+      pointer-events: none;
+    }
+
+    .vip-card.locked-vip button,
+    .vip-card.locked-vip .vip-info,
+    .vip-card.locked-vip .vip-icon {
+      opacity: 1;
+    }
+
+    .vip-card.active-vip {
+      outline: 2px solid rgba(42,211,130,.72);
+      box-shadow: 0 0 0 5px rgba(42,211,130,.08);
+    }
+
+    .vip-card.active-vip::after {
+      content: "فعال";
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      padding: 5px 9px;
+      border-radius: 999px;
+      background: #2ad382;
+      color: #04130c;
+      font-size: 10px;
+      font-weight: 900;
+      z-index: 4;
+    }
+  </style>
+  <link rel="stylesheet" href="assets/css/lucky-wheel.css">
+  <link rel="stylesheet" href="assets/css/announcement.css">
+  <link rel="stylesheet" href="assets/css/i18n.css">
+  <link rel="stylesheet" href="assets/css/v6.css">
+  <link rel="stylesheet" href="assets/css/premium.css">
+</head>
+
+<body>
+
+  <header class="main-header">
+
+    <div class="logo-container">
+
+      <div class="custom-logo">
+        S
+      </div>
+
+      <div>
+        <div class="brand-name">
+          SHAYE
+        </div>
+      </div>
+
+    </div>
+
+    <button type="button" class="logout-button" data-logout>خروج از حساب</button>
+  </header>
+
+  <main class="dashboard-container">
+
+    <section class="welcome">
+
+      <h2 id="userWelcome">
+        خوش آمدید 👋
+      </h2>
+
+      <p>
+        به پنل شخصی SHAYE خوش آمدید
+      </p>
+
+    </section>
+
+    <section class="slogan-box">
+      آینده مالی خود را با تصمیم‌های هوشمند بسازید
+    </section>
+
+    <section class="account-summary-grid">
+
+      <div class="card account-summary-card">
+
+        <div class="account-summary-label">
+          سرمایه کل
+        </div>
+
+        <div
+          class="account-summary-value"
+          id="dashboardInvestment"
+        >
+          0 USDT
+        </div>
+
+        <div class="account-summary-note">
+          مجموع همه واریزهای تأییدشده
+        </div>
+
+      </div>
+
+      <div class="card account-summary-card">
+
+        <div class="account-summary-label">
+          موجودی قابل برداشت
+        </div>
+
+        <div
+          class="account-summary-value"
+          id="dashboardWithdraw"
+        >
+          0 USDT
+        </div>
+
+        <div class="account-summary-note">
+          سودها، پاداش‌ها و کمیسیون‌ها
+        </div>
+
+      </div>
+
+    </section>
+
+    <section class="card current-vip-card">
+
+      <div class="modal-row">
+
+        <span>
+          سطح فعال شما
+        </span>
+
+        <strong
+          class="current-vip-badge"
+          id="dashboardActiveVip"
+        >
+          بدون VIP
+        </strong>
+
+      </div>
+
+      <div class="vip-progress-wrap">
+
+        <div class="vip-progress-track">
+
+          <div
+            class="vip-progress-fill"
+            id="dashboardVipProgress"
+          ></div>
+
+        </div>
+
+        <div
+          class="vip-progress-text"
+          id="dashboardVipProgressText"
+        ></div>
+
+      </div>
+
+    </section>
+
+    <section class="timer-box">
+
+      <p>
+        زمان باقی‌مانده تا محاسبه سود روزانه
+      </p>
+
+      <div class="timer" id="timer">
+        00:00:00
+      </div>
+
+    </section>
+
+    <h3 class="section-title">
+      سطوح VIP
+    </h3>
+
+    <section class="vip-list">
+
+      <article
+        class="vip-card vip1"
+        id="vipCard1"
+        onclick="openVip(1)"
+      >
+
+        <div class="vip-icon">
+          ★
+        </div>
+
+        <div class="vip-info">
+
+          <h3>
+            VIP 1
+          </h3>
+
+          <p>
+            شروع سرمایه‌گذاری
+          </p>
+
+        </div>
+
+        <button type="button">
+          جزئیات
+        </button>
+
+      </article>
+
+      <article
+        class="vip-card vip2"
+        id="vipCard2"
+        onclick="openVip(2)"
+      >
+
+        <div class="vip-icon">
+          ★★
+        </div>
+
+        <div class="vip-info">
+
+          <h3>
+            VIP 2
+          </h3>
+
+          <p>
+            رشد سرمایه
+          </p>
+
+        </div>
+
+        <button type="button">
+          جزئیات
+        </button>
+
+      </article>
+            <article
+        class="vip-card vip3"
+        id="vipCard3"
+        onclick="openVip(3)"
+      >
+
+        <div class="vip-icon">
+          ★★★
+        </div>
+
+        <div class="vip-info">
+
+          <h3>
+            VIP 3
+          </h3>
+
+          <p>
+            سطح حرفه‌ای
+          </p>
+
+        </div>
+
+        <button type="button">
+          جزئیات
+        </button>
+
+      </article>
+
+      <article
+        class="vip-card vip4"
+        id="vipCard4"
+        onclick="openVip(4)"
+      >
+
+        <div class="vip-icon">
+          ★★★★
+        </div>
+
+        <div class="vip-info">
+
+          <h3>
+            VIP 4
+          </h3>
+
+          <p>
+            سرمایه‌گذاری ویژه
+          </p>
+
+        </div>
+
+        <button type="button">
+          جزئیات
+        </button>
+
+      </article>
+
+      <article
+        class="vip-card vip5"
+        id="vipCard5"
+        onclick="openVip(5)"
+      >
+
+        <div class="vip-icon">
+          👑
+        </div>
+
+        <div class="vip-info">
+
+          <h3>
+            VIP 5
+          </h3>
+
+          <p>
+            سطح سلطنتی
+          </p>
+
+        </div>
+
+        <button type="button">
+          جزئیات
+        </button>
+
+      </article>
+
+    </section>
+
+  </main>
+
+  <div class="modal" id="vipModal">
+
+    <div class="modal-box">
+
+      <button
+        class="close"
+        type="button"
+        onclick="closeVip()"
+        aria-label="بستن"
+      >
+        ×
+      </button>
+
+      <h2 id="vipTitle">
+        VIP
+      </h2>
+
+      <p id="vipDescription">
+        جزئیات سطح سرمایه‌گذاری
+      </p>
+
+      <div class="modal-row">
+
+        <span>
+          حداقل سرمایه
+        </span>
+
+        <strong id="vipAmount">
+          -
+        </strong>
+
+      </div>
+
+      <div class="modal-row">
+
+        <span>
+          سود روزانه
+        </span>
+
+        <strong id="vipProfit">
+          -
+        </strong>
+
+      </div>
+
+      <div class="modal-row">
+
+        <span>
+          مدت فعال بودن
+        </span>
+
+        <strong id="vipTime">
+          -
+        </strong>
+
+      </div>
+
+      <button
+        class="btn-green vip-modal-action"
+        type="button"
+        id="vipActionButton"
+        onclick="goToDeposit()"
+      >
+        واریز برای این VIP
+      </button>
+
+      <div
+        class="modal-status-text"
+        id="vipModalStatus"
+      ></div>
+
+    </div>
+
+  </div>
+
+  <nav class="bottom-nav">
+
+    <button
+      type="button"
+      class="active"
+      onclick="goPage('dashboard.html')"
+    >
+      <span>🏠</span>
+      <span>خانه</span>
+    </button>
+
+    <button
+      type="button"
+      onclick="goPage('wallet.html')"
+    >
+      <span>💳</span>
+      <span>کیف پول</span>
+    </button>
+
+    <button
+      type="button"
+      onclick="goPage('team.html')"
+    >
+      <span>👥</span>
+      <span>تیم</span>
+    </button>
+
+    <button
+      type="button"
+      onclick="goPage('tasks.html')"
+    >
+      <span>📋</span>
+      <span>وظایف</span>
+    </button>
+
+    <button
+      type="button"
+      onclick="goPage('report.html')"
+    >
+      <span>📊</span>
+      <span>گزارش</span>
+    </button>
+
+  </nav>
+
+  <script src="assets/js/navigation.js"></script>
+  <script src="assets/js/config.js"></script>
+
+  <script>
+    "use strict";
+    const currentUserEmail =
+  localStorage.getItem("shaye_current_user");
+
+if (!currentUserEmail) {
+  location.replace("login.html");
+}
+
+const userWelcome =
+  document.getElementById("userWelcome");
+
+const USERS_KEY = "shaye_users";
+
+const ADMIN_SETTINGS = ShayeConfig.load();
+
+const VIP_LEVELS = [
+  { level: 1, amount: ADMIN_SETTINGS.vipAmounts[1], profit: ADMIN_SETTINGS.vipDailyRates[1] + "% روزانه", time: ADMIN_SETTINGS.cycleDays + " روز" },
+  { level: 2, amount: ADMIN_SETTINGS.vipAmounts[2], profit: ADMIN_SETTINGS.vipDailyRates[2] + "% روزانه", time: ADMIN_SETTINGS.cycleDays + " روز" },
+  { level: 3, amount: ADMIN_SETTINGS.vipAmounts[3], profit: ADMIN_SETTINGS.vipDailyRates[3] + "% روزانه", time: ADMIN_SETTINGS.cycleDays + " روز" },
+  { level: 4, amount: ADMIN_SETTINGS.vipAmounts[4], profit: ADMIN_SETTINGS.vipDailyRates[4] + "% روزانه", time: ADMIN_SETTINGS.cycleDays + " روز" },
+  { level: 5, amount: ADMIN_SETTINGS.vipAmounts[5], profit: ADMIN_SETTINGS.vipDailyRates[5] + "% روزانه", time: ADMIN_SETTINGS.cycleDays + " روز" }
+];
+
+function loadUsers() {
+  return JSON.parse(
+    localStorage.getItem(USERS_KEY) || "{}"
+  );
+}
+
+function saveUsers(users) {
+  localStorage.setItem(
+    USERS_KEY,
+    JSON.stringify(users)
+  );
+}
+
+let users = JSON.parse(
+  localStorage.getItem("shaye_users")
+) || [];
+
+const userIndex =
+  users.findIndex(
+    u => u.email === currentUserEmail
+  );
+
+if (userIndex === -1) {
+  location.href = "register.html";
+}
+
+let user = users[userIndex];
+if (!user) {
+  user = {
+    email: currentUserEmail,
+    investmentBalance: 0,
+    withdrawBalance: 0,
+    activeVip: 0,
+    dailyProfit: 0,
+    referralProfit: 0,
+    transactions: []
+  };
+  
+  users[currentUserEmail] = user;
+  saveUsers(users);
+}
+
+if (user.balance && !user.withdrawBalance) {
+  user.withdrawBalance = user.balance;
+  delete user.balance;
+}
+
+if (user.investment && !user.investmentBalance) {
+  user.investmentBalance = user.investment;
+  delete user.investment;
+}
+
+function calculateVip(amount) {
+  return ShayeConfig.detectVip(amount, ADMIN_SETTINGS);
+}
+
+user.activeVip =
+  calculateVip(user.investmentBalance || 0);
+
+users[userIndex] = user;
+
+localStorage.setItem(
+  "shaye_users",
+  JSON.stringify(users)
+);
+
+if (userWelcome) {
+  
+  userWelcome.textContent =
+    "خوش آمدید 👋 " + currentUserEmail;
+}
+
+document.getElementById(
+    "dashboardInvestment"
+  ).textContent =
+  Number(user.investmentBalance || 0).toFixed(2) +
+  " USDT";
+
+document.getElementById(
+    "dashboardWithdraw"
+  ).textContent =
+  Number(user.withdrawBalance || 0).toFixed(2) +
+  " USDT";
+
+document.getElementById(
+    "dashboardActiveVip"
+  ).textContent =
+  user.activeVip ?
+  "VIP " + user.activeVip :
+  "بدون VIP";
+
+function renderProgress() {
+  
+  const progress =
+    document.getElementById(
+      "dashboardVipProgress"
+    );
+  
+  const text =
+    document.getElementById(
+      "dashboardVipProgressText"
+    );
+  
+  const vip = user.activeVip;
+  
+  if (vip >= 5) {
+    
+    progress.style.width = "100%";
+    
+    text.textContent =
+      "تبریک! بالاترین سطح VIP را دارید.";
+    
+    return;
+  }
+  
+  const currentLimit =
+    vip === 0 ?
+    0 :
+    VIP_LEVELS[vip - 1].amount;
+  
+  const nextLimit =
+    VIP_LEVELS[vip].amount;
+  
+  const invested =
+    Number(user.investmentBalance);
+  
+  const percent =
+    ((invested - currentLimit) /
+      (nextLimit - currentLimit)) * 100;
+  
+  progress.style.width =
+    Math.max(
+      0,
+      Math.min(percent, 100)
+    ) + "%";
+  
+  const remain =
+    nextLimit - invested;
+  
+  text.textContent =
+    "برای VIP " +
+    (vip + 1) +
+    " به " +
+    remain.toFixed(2) +
+    " USDT دیگر نیاز دارید.";
+}
+
+renderProgress();
+
+function updateTimer() {
+  
+  const timer =
+    document.getElementById("timer");
+  
+  const now =
+    new Date();
+  
+  const target =
+    new Date();
+  
+  target.setHours(16, 0, 0, 0);
+  
+  if (now >= target) {
+    
+    target.setDate(
+      target.getDate() + 1
+    );
+  }
+  
+  const diff =
+    target - now;
+  
+  const h =
+    Math.floor(diff / 3600000);
+  
+  const m =
+    Math.floor(
+      diff / 60000 % 60
+    );
+  
+  const s =
+    Math.floor(
+      diff / 1000 % 60
+    );
+  
+  timer.textContent =
+    String(h).padStart(2, "0") +
+    ":" +
+    String(m).padStart(2, "0") +
+    ":" +
+    String(s).padStart(2, "0");
+}
+
+updateTimer();
+
+setInterval(
+  updateTimer,
+  1000
+);
+
+const vipData = {};
+
+for (let vipLevel = 1; vipLevel <= 5; vipLevel++) {
+  vipData[vipLevel] = {
+    title: "VIP " + vipLevel,
+    description: vipLevel === 1 ? "سطح مناسب برای شروع سرمایه‌گذاری" :
+      vipLevel === 2 ? "سطح مناسب برای رشد سرمایه" :
+      vipLevel === 3 ? "سطح حرفه‌ای سرمایه‌گذاری" :
+      vipLevel === 4 ? "سرمایه‌گذاری ویژه" :
+      "بالاترین سطح SHAYE",
+    amount: Number(ADMIN_SETTINGS.vipAmounts[vipLevel]).toLocaleString("en-US") + " USDT",
+    profit: ADMIN_SETTINGS.vipDailyRates[vipLevel] + "% روزانه",
+    time: ADMIN_SETTINGS.cycleDays + " روز"
+  };
+
+  const card = document.getElementById("vipCard" + vipLevel);
+  if (card) {
+    const description = card.querySelector(".vip-info p");
+    if (description) {
+      description.textContent =
+        Number(ADMIN_SETTINGS.vipAmounts[vipLevel]).toLocaleString("en-US") +
+        " USDT | " +
+        ADMIN_SETTINGS.vipDailyRates[vipLevel] +
+        "% روزانه";
+    }
+  }
+}
+
+let selectedVip=0;
+
+function openVip(id){
+
+selectedVip=id;
+
+const vip=vipData[id];
+
+document.getElementById("vipTitle").textContent=
+vip.title;
+
+document.getElementById("vipDescription").textContent=
+vip.description;
+
+document.getElementById("vipAmount").textContent=
+vip.amount;
+
+document.getElementById("vipProfit").textContent=
+vip.profit;
+
+document.getElementById("vipTime").textContent=
+vip.time;
+
+const status=
+document.getElementById("vipModalStatus");
+
+const button=
+document.getElementById("vipActionButton");
+
+if (Number(user.activeVip) === id) {
+  status.textContent = "این سطح VIP هم‌اکنون برای شما فعال است.";
+  button.textContent = "افزایش سرمایه";
+} else if (id < Number(user.activeVip)) {
+  status.textContent =
+    "این سطح قبلی قفل شده است؛ فقط بالاترین VIP کاربر فعال می‌ماند.";
+  button.textContent = "مشاهده سطح فعال";
+} else {
+  const needed = Math.max(
+    0,
+    Number(ADMIN_SETTINGS.vipAmounts[id]) -
+    Number(user.investmentBalance || 0)
+  );
+
+  status.textContent =
+    "این VIP قفل است. برای فعال‌شدن به " +
+    needed.toFixed(2) +
+    " USDT سرمایه بیشتر نیاز دارید.";
+
+  button.textContent = "واریز برای بازکردن";
+}
+
+document.getElementById("vipModal").style.display="flex";
+
+}
+
+function closeVip(){
+
+document.getElementById("vipModal").style.display="none";
+
+}
+
+function goToDeposit(){
+
+location.href=
+"deposit.html?vip="+selectedVip;
+
+}
+
+document
+.getElementById("vipModal")
+.addEventListener("click",function(e){
+
+if(e.target===this){
+
+closeVip();
+
+}
+
+});
+
+document.addEventListener("keydown",function(e){
+
+if(e.key==="Escape"){
+
+closeVip();
+
+}
+
+});
+
+for (let i = 1; i <= 5; i++) {
+  const card = document.getElementById("vipCard" + i);
+  const button = card ? card.querySelector("button") : null;
+
+  if (!card) continue;
+
+  card.classList.remove("active-vip", "locked-vip", "previous-vip");
+
+  if (i === Number(user.activeVip)) {
+    card.classList.add("active-vip");
+    card.setAttribute("data-vip-state", "active");
+
+    if (button) {
+      button.textContent = "فعال";
+    }
+  } else {
+    card.classList.add("locked-vip");
+    card.setAttribute(
+      "data-vip-state",
+      i < Number(user.activeVip) ? "previous" : "locked"
+    );
+
+    if (i < Number(user.activeVip)) {
+      card.classList.add("previous-vip");
+    }
+
+    if (button) {
+      button.textContent =
+        i < Number(user.activeVip) ? "سطح قبلی 🔒" : "قفل 🔒";
+    }
+  }
+}
+
+</script>
+
+  <script src="assets/js/auth-controls.js"></script>
+  <script src="assets/js/wheel-config.js"></script>
+  <script src="assets/js/lucky-wheel.js"></script>
+  <script src="assets/js/announcement.js"></script>
+  <script src="assets/js/i18n.js"></script>
+  <script src="assets/js/v6.js"></script>
+  <script src="assets/js/premium.js"></script>
+</body>
+</html>

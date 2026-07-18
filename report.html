@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#080c0f">
+  <title>گزارش‌ها | SHAYE</title>
+  <link rel="stylesheet" href="assets/css/dashboard.css">
+
+  <style>
+    .report-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    .report-stat {
+      padding: 15px;
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 15px;
+      background: rgba(255,255,255,.035);
+    }
+
+    .report-stat span {
+      display: block;
+      margin-bottom: 7px;
+      font-size: 11px;
+      opacity: .7;
+    }
+
+    .report-stat strong {
+      display: block;
+      direction: ltr;
+      text-align: right;
+      font-size: 17px;
+      line-height: 1.6;
+    }
+
+    .filter-tabs {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 7px;
+      margin-bottom: 14px;
+    }
+
+    .filter-tab {
+      min-height: 42px;
+      padding: 7px 4px;
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 11px;
+      background: rgba(255,255,255,.035);
+      color: inherit;
+      font: inherit;
+      font-size: 10px;
+      cursor: pointer;
+    }
+
+    .filter-tab.active {
+      border-color: rgba(42,211,130,.4);
+      background: rgba(42,211,130,.12);
+      color: #7ff0b5;
+    }
+
+    .transaction-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .transaction-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px;
+      border: 1px solid rgba(255,255,255,.07);
+      border-radius: 13px;
+      background: rgba(255,255,255,.04);
+    }
+
+    .transaction-main {
+      display: flex;
+      align-items: center;
+      min-width: 0;
+      gap: 10px;
+    }
+
+    .transaction-icon {
+      display: grid;
+      flex: 0 0 40px;
+      width: 40px;
+      height: 40px;
+      place-items: center;
+      border-radius: 11px;
+      background: rgba(255,255,255,.08);
+      font-size: 19px;
+    }
+
+    .transaction-info {
+      min-width: 0;
+    }
+
+    .transaction-title {
+      margin-bottom: 4px;
+      overflow: hidden;
+      font-size: 13px;
+      font-weight: 800;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .transaction-date {
+      font-size: 10px;
+      opacity: .6;
+    }
+
+    .transaction-side {
+      flex: 0 0 auto;
+      direction: ltr;
+      text-align: left;
+    }
+
+    .transaction-amount {
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    .transaction-amount.positive {
+      color: #69f0ae;
+    }
+
+    .transaction-amount.negative {
+      color: #ff8a80;
+    }
+
+    .transaction-status {
+      display: block;
+      margin-top: 4px;
+      direction: rtl;
+      font-size: 9px;
+      opacity: .65;
+    }
+
+    .empty-report {
+      padding: 24px 10px;
+      text-align: center;
+      font-size: 13px;
+      line-height: 2;
+      opacity: .68;
+    }
+
+    .report-error {
+      display: none;
+      margin-bottom: 14px;
+      padding: 12px;
+      border: 1px solid rgba(255,107,107,.25);
+      border-radius: 12px;
+      background: rgba(255,107,107,.08);
+      color: #ff9b9b;
+      text-align: center;
+      font-size: 12px;
+      line-height: 1.9;
+    }
+
+    @media (max-width: 440px) {
+      .filter-tabs {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+  </style>
+  <link rel="stylesheet" href="assets/css/lucky-wheel.css">
+  <link rel="stylesheet" href="assets/css/i18n.css">
+  <link rel="stylesheet" href="assets/css/v6.css">
+  <link rel="stylesheet" href="assets/css/premium.css">
+</head>
+
+<body>
+  <header class="main-header">
+    <div class="logo-container">
+      <div class="custom-logo">S</div>
+      <div class="brand-name">SHAYE</div>
+    </div>
+    <button type="button" class="logout-button" data-logout>خروج از حساب</button>
+  </header>
+
+  <main class="dashboard-container">
+    <section class="welcome">
+      <h2>گزارش‌ها 📊</h2>
+      <p>مشاهده سودها، واریزها، برداشت‌ها و پورسانت‌های حساب</p>
+    </section>
+
+    <div class="report-error" id="reportError"></div>
+
+    <section class="card">
+      <h3 class="section-title">خلاصه مالی</h3>
+
+      <div class="report-grid">
+        <div class="report-stat">
+          <span>سود امروز</span>
+          <strong id="todayProfit">0 USDT</strong>
+        </div>
+
+        <div class="report-stat">
+          <span>کل سود روزانه</span>
+          <strong id="totalDailyProfit">0 USDT</strong>
+        </div>
+
+        <div class="report-stat">
+          <span>کل پورسانت تیم</span>
+          <strong id="totalReferralProfit">0 USDT</strong>
+        </div>
+
+        <div class="report-stat">
+          <span>کل واریز سرمایه</span>
+          <strong id="totalDeposits">0 USDT</strong>
+        </div>
+
+        <div class="report-stat">
+          <span>کل برداشت</span>
+          <strong id="totalWithdrawals">0 USDT</strong>
+        </div>
+
+        <div class="report-stat">
+          <span>موجودی قابل برداشت</span>
+          <strong id="withdrawBalance">0 USDT</strong>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h3 class="section-title">تاریخچه تراکنش‌ها</h3>
+
+      <div class="filter-tabs">
+        <button type="button" class="filter-tab active" data-filter="all">همه</button>
+        <button type="button" class="filter-tab" data-filter="profit">سود</button>
+        <button type="button" class="filter-tab" data-filter="deposit">واریز</button>
+        <button type="button" class="filter-tab" data-filter="withdraw">برداشت</button>
+        <button type="button" class="filter-tab" data-filter="referral">پورسانت</button>
+      </div>
+
+      <div id="transactionList" class="transaction-list"></div>
+    </section>
+  </main>
+
+  <nav class="bottom-nav">
+    <button type="button" data-page="dashboard.html">🏠<br>خانه</button>
+    <button type="button" data-page="wallet.html">💳<br>کیف پول</button>
+    <button type="button" data-page="team.html">👥<br>تیم</button>
+    <button type="button" data-page="tasks.html">📋<br>وظایف</button>
+    <button type="button" data-page="report.html" class="active">📊<br>گزارش</button>
+  </nav>
+
+  <script>
+    "use strict";
+
+    var USERS_KEY = "shaye_users";
+    var CURRENT_USER_KEY = "shaye_current_user";
+
+    var users = [];
+    var currentUser = null;
+    var activeFilter = "all";
+
+    function normalizeEmail(value) {
+      return String(value || "").trim().toLowerCase();
+    }
+
+    function loadUsers() {
+      try {
+        var raw = localStorage.getItem(USERS_KEY);
+        var data = raw ? JSON.parse(raw) : [];
+        return Array.isArray(data) ? data : [];
+      } catch (error) {
+        console.error(error);
+        return [];
+      }
+    }
+
+    function roundMoney(value) {
+      return Math.round((Number(value) || 0) * 100) / 100;
+    }
+
+    function formatAmount(value) {
+      return roundMoney(value).toLocaleString("en-US", {
+        maximumFractionDigits: 2
+      }) + " USDT";
+    }
+
+    function formatDate(value) {
+      var date = new Date(value);
+
+      if (isNaN(date.getTime())) {
+        return String(value || "");
+      }
+
+      try {
+        return date.toLocaleString("fa-IR", {
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit",
+          hour: "2-digit",
+          minute: "2-digit"
+        });
+      } catch (error) {
+        return date.toLocaleString();
+      }
+    }
+
+    function escapeHtml(value) {
+      return String(value || "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    function isDeposit(type) {
+      return type === "deposit" ||
+             type === "investment_deposit" ||
+             type === "confirmed_deposit";
+    }
+
+    function isProfit(type) {
+      return type === "profit" ||
+             type === "daily_profit" ||
+             type === "task_profit";
+    }
+
+    function isWithdrawal(type) {
+      return type === "withdraw" ||
+             type === "withdrawal" ||
+             type === "withdraw_request";
+    }
+
+    function isReferral(type) {
+      return type === "referral" ||
+             type === "referral_commission";
+    }
+
+    function transactionCategory(transaction) {
+      var type = String(transaction.type || "");
+
+      if (isDeposit(type)) return "deposit";
+      if (isProfit(type)) return "profit";
+      if (isWithdrawal(type)) return "withdraw";
+      if (isReferral(type)) return "referral";
+
+      return "other";
+    }
+
+    function transactionMeta(transaction) {
+      var category = transactionCategory(transaction);
+
+      if (category === "deposit") {
+        return {
+          icon: "📥",
+          title: transaction.title || "واریز سرمایه",
+          sign: "+",
+          amountClass: "positive"
+        };
+      }
+
+      if (category === "profit") {
+        return {
+          icon: "💰",
+          title: transaction.title || "سود روزانه",
+          sign: "+",
+          amountClass: "positive"
+        };
+      }
+
+      if (category === "withdraw") {
+        return {
+          icon: "💸",
+          title: transaction.title || "برداشت",
+          sign: "-",
+          amountClass: "negative"
+        };
+      }
+
+      if (category === "referral") {
+        return {
+          icon: "👥",
+          title: transaction.title || "پورسانت تیم",
+          sign: "+",
+          amountClass: "positive"
+        };
+      }
+
+      return {
+        icon: "📄",
+        title: transaction.title || transaction.type || "تراکنش",
+        sign: Number(transaction.amount) < 0 ? "-" : "+",
+        amountClass: Number(transaction.amount) < 0 ? "negative" : "positive"
+      };
+    }
+
+    function statusText(status) {
+      var value = String(status || "").toLowerCase();
+
+      if (value === "confirmed" || value === "completed" || value === "success") {
+        return "تکمیل‌شده";
+      }
+
+      if (value === "pending") {
+        return "در انتظار";
+      }
+
+      if (value === "rejected" || value === "failed") {
+        return "ردشده";
+      }
+
+      return value || "ثبت‌شده";
+    }
+
+    function sumTransactions(category) {
+      var total = 0;
+      var transactions = currentUser.transactions || [];
+
+      for (var i = 0; i < transactions.length; i++) {
+        if (transactionCategory(transactions[i]) === category) {
+          total += Math.abs(Number(transactions[i].amount) || 0);
+        }
+      }
+
+      return roundMoney(total);
+    }
+
+    function getTodayProfit() {
+      var total = 0;
+      var now = new Date();
+      var transactions = currentUser.transactions || [];
+
+      for (var i = 0; i < transactions.length; i++) {
+        var item = transactions[i];
+
+        if (transactionCategory(item) !== "profit") {
+          continue;
+        }
+
+        var date = new Date(item.date);
+
+        if (
+          !isNaN(date.getTime()) &&
+          date.getFullYear() === now.getFullYear() &&
+          date.getMonth() === now.getMonth() &&
+          date.getDate() === now.getDate()
+        ) {
+          total += Number(item.amount) || 0;
+        }
+      }
+
+      return roundMoney(total);
+    }
+
+    function renderSummary() {
+      document.getElementById("todayProfit").textContent =
+        formatAmount(getTodayProfit());
+
+      document.getElementById("totalDailyProfit").textContent =
+        formatAmount(
+          Math.max(
+            Number(currentUser.dailyProfit) || 0,
+            sumTransactions("profit")
+          )
+        );
+
+      document.getElementById("totalReferralProfit").textContent =
+        formatAmount(
+          Math.max(
+            Number(currentUser.referralProfit) || 0,
+            sumTransactions("referral")
+          )
+        );
+
+      document.getElementById("totalDeposits").textContent =
+        formatAmount(sumTransactions("deposit"));
+
+      document.getElementById("totalWithdrawals").textContent =
+        formatAmount(sumTransactions("withdraw"));
+
+      document.getElementById("withdrawBalance").textContent =
+        formatAmount(currentUser.withdrawBalance);
+    }
+
+    function renderTransactions() {
+      var list = document.getElementById("transactionList");
+      var transactions = (currentUser.transactions || []).slice();
+
+      transactions.sort(function (a, b) {
+        return new Date(b.date || 0).getTime() -
+               new Date(a.date || 0).getTime();
+      });
+
+      var filtered = [];
+
+      for (var i = 0; i < transactions.length; i++) {
+        var category = transactionCategory(transactions[i]);
+
+        if (activeFilter === "all" || category === activeFilter) {
+          filtered.push(transactions[i]);
+        }
+      }
+
+      if (filtered.length === 0) {
+        list.innerHTML =
+          '<div class="empty-report">در این بخش هنوز تراکنشی ثبت نشده است.</div>';
+        return;
+      }
+
+      var html = "";
+
+      for (var j = 0; j < filtered.length; j++) {
+        var item = filtered[j];
+        var meta = transactionMeta(item);
+        var amount = Math.abs(Number(item.amount) || 0);
+
+        html +=
+          '<div class="transaction-item">' +
+            '<div class="transaction-main">' +
+              '<div class="transaction-icon">' +
+                meta.icon +
+              '</div>' +
+              '<div class="transaction-info">' +
+                '<div class="transaction-title">' +
+                  escapeHtml(meta.title) +
+                '</div>' +
+                '<div class="transaction-date">' +
+                  escapeHtml(formatDate(item.date)) +
+                '</div>' +
+              '</div>' +
+            '</div>' +
+            '<div class="transaction-side">' +
+              '<div class="transaction-amount ' +
+                meta.amountClass +
+              '">' +
+                meta.sign +
+                formatAmount(amount) +
+              '</div>' +
+              '<span class="transaction-status">' +
+                escapeHtml(statusText(item.status)) +
+              '</span>' +
+            '</div>' +
+          '</div>';
+      }
+
+      list.innerHTML = html;
+    }
+
+    function setFilter(filter) {
+      activeFilter = filter;
+
+      var buttons = document.querySelectorAll(".filter-tab");
+
+      for (var i = 0; i < buttons.length; i++) {
+        if (buttons[i].getAttribute("data-filter") === filter) {
+          buttons[i].classList.add("active");
+        } else {
+          buttons[i].classList.remove("active");
+        }
+      }
+
+      renderTransactions();
+    }
+
+    function bindEvents() {
+      var filterButtons = document.querySelectorAll(".filter-tab");
+      var navButtons = document.querySelectorAll(".bottom-nav button");
+
+      for (var i = 0; i < filterButtons.length; i++) {
+        filterButtons[i].addEventListener("click", function () {
+          setFilter(this.getAttribute("data-filter"));
+        });
+      }
+
+      for (var j = 0; j < navButtons.length; j++) {
+        navButtons[j].addEventListener("click", function () {
+          window.location.href = this.getAttribute("data-page");
+        });
+      }
+    }
+
+    function initializeReport() {
+      try {
+        bindEvents();
+
+        var currentEmail = normalizeEmail(
+          localStorage.getItem(CURRENT_USER_KEY)
+        );
+
+        if (!currentEmail) {
+          window.location.replace("index.html");
+          return;
+        }
+
+        users = loadUsers();
+
+        for (var i = 0; i < users.length; i++) {
+          if (normalizeEmail(users[i].email) === currentEmail) {
+            currentUser = users[i];
+            break;
+          }
+        }
+
+        if (!currentUser) {
+          localStorage.removeItem(CURRENT_USER_KEY);
+          window.location.replace("index.html");
+          return;
+        }
+
+        if (!Array.isArray(currentUser.transactions)) {
+          currentUser.transactions = [];
+        }
+
+        if (typeof currentUser.dailyProfit !== "number") {
+          currentUser.dailyProfit = 0;
+        }
+
+        if (typeof currentUser.referralProfit !== "number") {
+          currentUser.referralProfit = 0;
+        }
+
+        if (typeof currentUser.withdrawBalance !== "number") {
+          currentUser.withdrawBalance =
+            Number(currentUser.balance) || 0;
+        }
+
+        renderSummary();
+        renderTransactions();
+      } catch (error) {
+        console.error("خطای گزارش:", error);
+
+        var errorBox = document.getElementById("reportError");
+        errorBox.style.display = "block";
+        errorBox.textContent = "خطایی هنگام بارگذاری گزارش‌ها رخ داد.";
+      }
+    }
+
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", initializeReport);
+    } else {
+      initializeReport();
+    }
+  </script>
+  <script src="assets/js/auth-controls.js"></script>
+  <script src="assets/js/wheel-config.js"></script>
+  <script src="assets/js/lucky-wheel.js"></script>
+  <script src="assets/js/i18n.js"></script>
+  <script src="assets/js/v6.js"></script>
+  <script src="assets/js/premium.js"></script>
+</body>
+</html>

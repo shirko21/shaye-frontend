@@ -1,0 +1,1555 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+  >
+
+  <meta
+    name="theme-color"
+    content="#080c0f"
+  >
+
+  <title>شارژ سرمایه | SHAYE</title>
+
+  <link
+    href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css"
+    rel="stylesheet"
+  >
+
+  <link
+    rel="stylesheet"
+    href="assets/css/theme.css"
+  >
+
+  <link
+    rel="stylesheet"
+    href="assets/css/dashboard.css"
+  >
+
+  <style>
+    .deposit-summary {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    .deposit-summary-item {
+      padding: 14px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .deposit-summary-item span {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 12px;
+      opacity: 0.7;
+    }
+
+    .deposit-summary-item strong {
+      display: block;
+      font-size: 16px;
+      word-break: break-word;
+    }
+
+    .deposit-vip-message {
+      margin-top: 14px;
+      padding: 13px 14px;
+      border-radius: 13px;
+      line-height: 1.9;
+      font-size: 13px;
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .deposit-vip-message.success {
+      border: 1px solid rgba(42, 211, 130, 0.28);
+      background: rgba(42, 211, 130, 0.08);
+    }
+
+    .deposit-vip-message.warning {
+      border: 1px solid rgba(255, 193, 7, 0.25);
+      background: rgba(255, 193, 7, 0.07);
+    }
+
+    .deposit-vip-message.neutral {
+      border: 1px solid rgba(255, 255, 255, 0.09);
+    }
+
+    .address-box {
+      direction: ltr;
+      text-align: left;
+      word-break: break-all;
+      user-select: all;
+    }
+
+    .deposit-form {
+      display: grid;
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .deposit-label {
+      font-size: 13px;
+      opacity: 0.8;
+    }
+
+    .deposit-input {
+      width: 100%;
+      min-height: 50px;
+      padding: 0 14px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 13px;
+      outline: none;
+      font: inherit;
+      direction: ltr;
+      text-align: left;
+      color: inherit;
+      background: rgba(255, 255, 255, 0.04);
+      box-sizing: border-box;
+    }
+
+    .deposit-input:focus {
+      border-color: rgba(42, 211, 130, 0.55);
+    }
+
+    .deposit-note {
+      margin: 0;
+      font-size: 12px;
+      line-height: 1.9;
+      opacity: 0.68;
+    }
+
+    .secondary-button {
+      width: 100%;
+      min-height: 48px;
+      margin-top: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 13px;
+      font: inherit;
+      font-weight: 700;
+      color: inherit;
+      background: rgba(255, 255, 255, 0.04);
+      cursor: pointer;
+    }
+
+    .transaction-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 13px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+    }
+
+    .transaction-item:last-child {
+      border-bottom: 0;
+    }
+
+    .transaction-icon {
+      display: grid;
+      flex: 0 0 42px;
+      width: 42px;
+      height: 42px;
+      place-items: center;
+      border-radius: 50%;
+      font-weight: 900;
+      background: rgba(42, 211, 130, 0.1);
+    }
+
+    .transaction-info {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .transaction-info strong,
+    .transaction-info span {
+      display: block;
+    }
+
+    .transaction-info strong {
+      margin-bottom: 5px;
+      font-size: 13px;
+    }
+
+    .transaction-info span {
+      font-size: 11px;
+      opacity: 0.62;
+    }
+
+    .transaction-amount {
+      direction: ltr;
+      white-space: nowrap;
+      font-weight: 800;
+    }
+
+    .empty-deposit-history {
+      padding: 22px 10px;
+      text-align: center;
+      line-height: 2;
+      opacity: 0.72;
+    }
+
+    .selected-vip-box {
+      display: none;
+    }
+
+    .selected-vip-box.visible {
+      display: block;
+    }
+
+    @media (max-width: 420px) {
+      .deposit-summary {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+  <link rel="stylesheet" href="assets/css/lucky-wheel.css">
+  <link rel="stylesheet" href="assets/css/i18n.css">
+  <link rel="stylesheet" href="assets/css/v6.css">
+  <link rel="stylesheet" href="assets/css/premium.css">
+</head>
+
+<body>
+
+  <header class="main-header">
+
+    <div class="logo-container">
+
+      <div class="custom-logo">
+        S
+      </div>
+
+      <div class="brand-name">
+        SHAYE
+      </div>
+
+    </div>
+
+    <button type="button" class="logout-button" data-logout>خروج از حساب</button>
+  </header>
+
+
+  <main class="dashboard-container">
+
+    <section class="welcome">
+
+      <h2>
+        شارژ سرمایه 💳
+      </h2>
+
+      <p>
+        واریز USDT روی شبکه BEP20
+      </p>
+
+    </section>
+
+
+    <section class="card">
+
+      <h3>
+        وضعیت سرمایه
+      </h3>
+
+      <div class="deposit-summary">
+
+        <div class="deposit-summary-item">
+
+          <span>
+            سرمایه فعلی
+          </span>
+
+          <strong id="investmentBalance">
+            0 USDT
+          </strong>
+
+        </div>
+
+        <div class="deposit-summary-item">
+
+          <span>
+            سطح فعال
+          </span>
+
+          <strong id="activeVip">
+            بدون VIP
+          </strong>
+
+        </div>
+
+      </div>
+
+      <div
+        class="deposit-vip-message neutral"
+        id="vipProgressMessage"
+      >
+        در حال محاسبه وضعیت VIP...
+      </div>
+
+    </section>
+
+
+    <section
+      class="card selected-vip-box"
+      id="selectedVipBox"
+    >
+
+      <h3>
+        VIP انتخاب‌شده
+      </h3>
+
+      <div class="modal-row">
+
+        <span>
+          سطح انتخاب‌شده
+        </span>
+
+        <strong id="selectedVipName">
+          -
+        </strong>
+
+      </div>
+
+      <div class="modal-row">
+
+        <span>
+          سرمایه مورد نیاز
+        </span>
+
+        <strong id="selectedVipAmount">
+          -
+        </strong>
+
+      </div>
+
+      <div class="modal-row">
+
+        <span>
+          مبلغ باقی‌مانده
+        </span>
+
+        <strong id="selectedVipShortage">
+          -
+        </strong>
+
+      </div>
+
+      <p class="deposit-note">
+        انتخاب یک VIP به‌معنی فعال‌شدن مستقیم آن نیست. سطح VIP همیشه بر اساس کل سرمایه تأییدشده حساب تعیین می‌شود.
+      </p>
+
+    </section>
+
+
+    <section class="card">
+
+      <h3>
+        شبکه انتقال
+      </h3>
+
+      <div class="network-box">
+        USDT BEP20
+      </div>
+
+      <p class="deposit-note">
+        فقط USDT شبکه BEP20 را به این آدرس ارسال کنید. ارسال دارایی یا شبکه دیگر ممکن است باعث از دست رفتن وجه شود.
+      </p>
+
+    </section>
+
+
+    <section class="card">
+
+      <h3>
+        آدرس واریز
+      </h3>
+
+      <div
+        class="address-box"
+        id="walletAddress"
+      >
+        در حال بررسی...
+      </div>
+
+      <button
+        type="button"
+        class="btn-green"
+        id="copyAddressButton"
+        onclick="copyAddress()"
+      >
+        کپی آدرس
+      </button>
+
+    </section>
+
+
+    <section class="card">
+
+      <h3>
+        ثبت واریز آزمایشی
+      </h3>
+
+      <p class="deposit-note">
+        این بخش مخصوص نسخه محلی پروژه است. در نسخه نهایی، تراکنش پس از تأیید شبکه و سرور به‌صورت خودکار ثبت خواهد شد.
+      </p>
+
+      <div class="deposit-form">
+
+        <label
+          class="deposit-label"
+          for="depositAmount"
+        >
+          مبلغ واریز تأییدشده
+        </label>
+
+        <input
+          type="number"
+          id="depositAmount"
+          class="deposit-input"
+          min="0.01"
+          step="0.01"
+          inputmode="decimal"
+          placeholder="مثلاً 90"
+          autocomplete="off"
+        >
+
+        <button
+          type="button"
+          class="btn-green"
+          id="confirmDepositButton"
+          onclick="confirmTestDeposit()"
+        >
+          ثبت واریز تأییدشده
+        </button>
+
+      </div>
+
+    </section>
+
+
+    <section class="card">
+
+      <h3>
+        وضعیت واریزها
+      </h3>
+
+      <div id="transactionList">
+
+        <div class="empty-deposit-history">
+          هنوز واریزی ثبت نشده است
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <section class="card">
+
+      <h3>
+        راهنمای شارژ
+      </h3>
+
+      <p>
+        ۱- آدرس واریز بالا را کپی کنید.
+      </p>
+
+      <p>
+        ۲- از کیف پول یا صرافی خود، USDT را فقط روی شبکه BEP20 ارسال کنید.
+      </p>
+
+      <p>
+        ۳- پس از تأیید تراکنش، مبلغ به سرمایه غیرقابل برداشت شما اضافه می‌شود.
+      </p>
+
+      <p>
+        ۴- سیستم مجموع سرمایه را بررسی می‌کند و بالاترین VIP مجاز را خودکار فعال می‌کند.
+      </p>
+
+      <p>
+        ۵- مبلغ سرمایه با فعال‌شدن VIP کم نمی‌شود.
+      </p>
+
+    </section>
+
+  </main>
+
+
+  <nav
+    class="bottom-nav"
+    aria-label="منوی اصلی"
+  >
+
+    <button
+      type="button"
+      onclick="goPage('dashboard.html')"
+    >
+      <span>🏠</span>
+      <span>خانه</span>
+    </button>
+
+    <button
+      type="button"
+      onclick="goPage('wallet.html')"
+      class="active"
+    >
+      <span>💳</span>
+      <span>کیف پول</span>
+    </button>
+
+    <button
+      type="button"
+      onclick="goPage('team.html')"
+    >
+      <span>👥</span>
+      <span>تیم</span>
+    </button>
+
+    <button
+      type="button"
+      onclick="goPage('tasks.html')"
+    >
+      <span>📋</span>
+      <span>وظایف</span>
+    </button>
+
+    <button
+      type="button"
+      onclick="goPage('report.html')"
+    >
+      <span>📊</span>
+      <span>گزارش</span>
+    </button>
+
+  </nav>
+
+
+  <script src="assets/js/navigation.js"></script>
+  <script src="assets/js/config.js"></script>
+
+  <script>
+
+    "use strict";
+
+
+    const depositSettings = ShayeConfig.load();
+
+    const vipLevels = {
+      1: { amount: depositSettings.vipAmounts[1], title: "VIP 1" },
+      2: { amount: depositSettings.vipAmounts[2], title: "VIP 2" },
+      3: { amount: depositSettings.vipAmounts[3], title: "VIP 3" },
+      4: { amount: depositSettings.vipAmounts[4], title: "VIP 4" },
+      5: { amount: depositSettings.vipAmounts[5], title: "VIP 5" }
+    };
+
+
+    const currentUserEmail =
+      localStorage.getItem(
+        "shaye_current_user"
+      );
+
+
+    if (!currentUserEmail) {
+
+      window.location.replace(
+        "login.html"
+      );
+
+    }
+
+
+    let users = [];
+
+    try {
+
+      users =
+        JSON.parse(
+          localStorage.getItem(
+            "shaye_users"
+          )
+        ) || [];
+
+    }
+    catch (error) {
+
+      console.error(
+        "خطا در خواندن کاربران:",
+        error
+      );
+
+      users = [];
+
+    }
+
+
+    const userIndex =
+      users.findIndex(
+        function (item) {
+
+          return (
+            item.email ===
+            currentUserEmail
+          );
+
+        }
+      );
+
+
+    if (userIndex === -1) {
+
+      window.location.replace(
+        "register.html"
+      );
+
+    }
+
+
+    let user =
+      users[userIndex];
+
+
+    const pageParams =
+      new URLSearchParams(
+        window.location.search
+      );
+
+
+    const requestedVipParam =
+      pageParams.get("vip");
+
+
+    const requestedVip =
+      vipLevels[requestedVipParam]
+        ? Number(requestedVipParam)
+        : null;
+
+
+    migrateUserData();
+
+    updateVipAutomatically();
+
+    saveUsers();
+
+    renderPage();
+
+
+    function migrateUserData() {
+
+      if (
+        typeof user.investmentBalance !==
+        "number"
+      ) {
+
+        const oldInvestment =
+          Number(user.investment) || 0;
+
+
+        const oldBalance =
+          Number(user.balance) || 0;
+
+
+        user.investmentBalance =
+          oldInvestment > 0
+            ? oldInvestment
+            : oldBalance;
+
+      }
+
+
+      if (
+        typeof user.withdrawBalance !==
+        "number"
+      ) {
+
+        user.withdrawBalance =
+          Number(
+            user.withdrawableBalance
+          ) ||
+          Number(user.profit) ||
+          0;
+
+      }
+
+
+      if (
+        typeof user.dailyProfit !==
+        "number"
+      ) {
+
+        user.dailyProfit = 0;
+
+      }
+
+
+      if (
+        typeof user.referralProfit !==
+        "number"
+      ) {
+
+        user.referralProfit = 0;
+
+      }
+
+
+      if (
+        !Array.isArray(
+          user.transactions
+        )
+      ) {
+
+        user.transactions = [];
+
+      }
+
+
+      if (
+        user.activeVip === undefined ||
+        user.activeVip === null
+      ) {
+
+        user.activeVip = 0;
+
+      }
+
+    }
+
+
+    function saveUsers() {
+
+      users[userIndex] = user;
+
+      localStorage.setItem(
+        "shaye_users",
+        JSON.stringify(users)
+      );
+
+    }
+
+
+    function formatAmount(amount) {
+
+      const safeAmount =
+        Number(amount) || 0;
+
+
+      return (
+        safeAmount.toLocaleString(
+          "en-US",
+          {
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 2
+          }
+        ) +
+        " USDT"
+      );
+
+    }
+
+
+    function getVipByInvestment(
+      investmentAmount
+    ) {
+      return ShayeConfig.detectVip(
+        investmentAmount,
+        ShayeConfig.load()
+      );
+    }
+
+
+    function updateVipAutomatically() {
+
+      const calculatedVip =
+        getVipByInvestment(
+          user.investmentBalance
+        );
+
+
+      user.activeVip =
+        calculatedVip;
+
+
+      return calculatedVip;
+
+    }
+
+
+    function getNextVipLevel() {
+
+      const currentVip =
+        Number(user.activeVip) || 0;
+
+
+      if (currentVip >= 5) {
+        return null;
+      }
+
+
+      return currentVip + 1;
+
+    }
+
+
+    function getWalletAddress() {
+
+      if (
+        user.wallet &&
+        typeof user.wallet.address ===
+          "string" &&
+        user.wallet.address.trim()
+      ) {
+
+        return user.wallet.address.trim();
+
+      }
+
+
+      if (
+        typeof user.walletAddress ===
+          "string" &&
+        user.walletAddress.trim()
+      ) {
+
+        return user.walletAddress.trim();
+
+      }
+
+
+      return "0x1111111111111111111111111111111111111111";
+
+    }
+
+
+    function renderPage() {
+
+      renderWalletAddress();
+
+      renderInvestmentStatus();
+
+      renderRequestedVip();
+
+      renderDeposits();
+
+    }
+
+
+    function renderWalletAddress() {
+
+      const addressBox =
+        document.getElementById(
+          "walletAddress"
+        );
+
+
+      const copyButton =
+        document.getElementById(
+          "copyAddressButton"
+        );
+
+
+      const walletAddress =
+        getWalletAddress();
+
+
+      if (walletAddress) {
+
+        addressBox.textContent =
+          walletAddress;
+
+
+        copyButton.disabled = false;
+
+      }
+      else {
+
+        addressBox.textContent =
+          "آدرس واریز در حال حاضر تنظیم نشده است.";
+
+
+        copyButton.disabled = true;
+
+      }
+
+    }
+
+
+    function renderInvestmentStatus() {
+
+      document.getElementById(
+        "investmentBalance"
+      ).textContent =
+        formatAmount(
+          user.investmentBalance
+        );
+
+
+      document.getElementById(
+        "activeVip"
+      ).textContent =
+        user.activeVip > 0
+          ? "VIP " + user.activeVip
+          : "بدون VIP";
+
+
+      const progressMessage =
+        document.getElementById(
+          "vipProgressMessage"
+        );
+
+
+      const nextVip =
+        getNextVipLevel();
+
+
+      if (!nextVip) {
+
+        progressMessage.textContent =
+          "بالاترین سطح VIP برای حساب شما فعال است.";
+
+
+        progressMessage.className =
+          "deposit-vip-message success";
+
+        return;
+
+      }
+
+
+      const requiredAmount =
+        vipLevels[nextVip].amount;
+
+
+      const shortage =
+        Math.max(
+          0,
+          requiredAmount -
+          user.investmentBalance
+        );
+
+
+     progressMessage.textContent =
+  "برای " +
+  vipLevels[nextVip].title +
+  " به " +
+  formatAmount(shortage) +
+  " نیاز دارید.";
+
+      progressMessage.className =
+        user.activeVip > 0
+          ? "deposit-vip-message success"
+          : "deposit-vip-message warning";
+
+    }
+
+
+    function renderRequestedVip() {
+
+      const selectedVipBox =
+        document.getElementById(
+          "selectedVipBox"
+        );
+
+
+      if (!requestedVip) {
+
+        selectedVipBox.classList.remove(
+          "visible"
+        );
+
+        return;
+
+      }
+
+
+      const requestedData =
+        vipLevels[requestedVip];
+
+
+      const shortage =
+        Math.max(
+          0,
+          requestedData.amount -
+          user.investmentBalance
+        );
+
+
+      selectedVipBox.classList.add(
+        "visible"
+      );
+
+
+      document.getElementById(
+        "selectedVipName"
+      ).textContent =
+        requestedData.title;
+
+
+      document.getElementById(
+        "selectedVipAmount"
+      ).textContent =
+        formatAmount(
+          requestedData.amount
+        );
+
+
+      document.getElementById(
+        "selectedVipShortage"
+      ).textContent =
+        shortage > 0
+          ? formatAmount(shortage)
+          : "شرایط این سطح را دارید";
+
+    }
+
+
+    function renderDeposits() {
+
+      const transactionList =
+        document.getElementById(
+          "transactionList"
+        );
+
+
+      const depositTransactions =
+        user.transactions.filter(
+          function (transaction) {
+
+            return (
+              transaction.type ===
+                "deposit" ||
+              transaction.type ===
+                "investment_deposit"
+            );
+
+          }
+        );
+
+
+      if (
+        depositTransactions.length === 0
+      ) {
+
+        transactionList.innerHTML = `
+
+          <div class="empty-deposit-history">
+            هنوز واریزی ثبت نشده است
+          </div>
+
+        `;
+
+        return;
+
+      }
+
+
+      transactionList.innerHTML =
+        depositTransactions
+          .map(
+            function (transaction) {
+
+              const transactionDate =
+                formatTransactionDate(
+                  transaction.date
+                );
+
+
+              return `
+
+                <article class="transaction-item">
+
+                  <div class="transaction-icon">
+                    ↓
+                  </div>
+
+                  <div class="transaction-info">
+
+                    <strong>
+                      واریز به سرمایه
+                    </strong>
+
+                    <span>
+                      ${escapeHtml(
+                        transactionDate
+                      )}
+                    </span>
+
+                  </div>
+
+                  <div class="transaction-amount">
+                    +${escapeHtml(
+                      formatAmount(
+                        transaction.amount
+                      )
+                    )}
+                  </div>
+
+                </article>
+
+              `;
+
+            }
+          )
+          .join("");
+
+    }
+
+
+    function formatTransactionDate(
+      dateValue
+    ) {
+
+      if (!dateValue) {
+        return "تاریخ نامشخص";
+      }
+
+
+      const parsedDate =
+        new Date(dateValue);
+
+
+      if (
+        Number.isNaN(
+          parsedDate.getTime()
+        )
+      ) {
+
+        return String(dateValue);
+
+      }
+
+
+      return parsedDate.toLocaleString(
+        "fa-IR",
+        {
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit",
+          hour: "2-digit",
+          minute: "2-digit"
+        }
+      );
+
+    }
+
+
+    function escapeHtml(value) {
+
+      return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+
+    }
+
+
+    async function copyAddress() {
+
+      const walletAddress =
+        getWalletAddress();
+
+
+      if (!walletAddress) {
+
+        alert(
+          "آدرس کیف پول هنوز ایجاد نشده است"
+        );
+
+        return;
+
+      }
+
+
+      try {
+
+        await navigator.clipboard.writeText(
+          walletAddress
+        );
+
+
+        alert(
+          "آدرس با موفقیت کپی شد"
+        );
+
+      }
+      catch (error) {
+
+        const temporaryInput =
+          document.createElement(
+            "textarea"
+          );
+
+
+        temporaryInput.value =
+          walletAddress;
+
+
+        document.body.appendChild(
+          temporaryInput
+        );
+
+
+        temporaryInput.select();
+
+
+        document.execCommand(
+          "copy"
+        );
+
+
+        temporaryInput.remove();
+
+
+        alert(
+          "آدرس با موفقیت کپی شد"
+        );
+
+      }
+
+    }
+
+
+
+    function normalizeReferralEmail(value) {
+      return String(value || "").trim().toLowerCase();
+    }
+
+    function ensureReferralFields(targetUser) {
+      if (typeof targetUser.withdrawBalance !== "number") {
+        targetUser.withdrawBalance =
+          Number(targetUser.withdrawableBalance) ||
+          Number(targetUser.profit) ||
+          Number(targetUser.balance) ||
+          0;
+      }
+
+      if (typeof targetUser.referralProfit !== "number") {
+        targetUser.referralProfit = 0;
+      }
+
+      if (!Array.isArray(targetUser.transactions)) {
+        targetUser.transactions = [];
+      }
+
+      if (typeof targetUser.referredBy !== "string") {
+        targetUser.referredBy = "";
+      }
+    }
+
+    function restartProfitCycle(targetUser) {
+      const start = new Date();
+      const end = new Date(start);
+      end.setDate(end.getDate() + ShayeConfig.load().cycleDays);
+
+      targetUser.vipActivatedAt = start.toISOString();
+      targetUser.vipExpiresAt = end.toISOString();
+      targetUser.profitDaysClaimed = 0;
+      targetUser.lastTaskClaimId = "";
+      targetUser.lastTaskClaimedAt = "";
+    }
+
+    function distributeReferralCommissions(sourceUser, depositAmount, sourceDepositId) {
+      const rates = [12, 6, 2];
+      let parentEmail = normalizeReferralEmail(sourceUser.referredBy);
+
+      for (let level = 1; level <= 3; level++) {
+        if (!parentEmail) break;
+
+        const parentIndex = users.findIndex(function (candidate) {
+          return normalizeReferralEmail(candidate.email) === parentEmail;
+        });
+
+        if (parentIndex === -1) break;
+
+        const parent = users[parentIndex];
+        ensureReferralFields(parent);
+
+        const alreadyPaid = parent.transactions.some(function (transaction) {
+          return (
+            transaction.type === "referral_commission" &&
+            transaction.sourceDepositId === sourceDepositId &&
+            Number(transaction.teamLevel) === level
+          );
+        });
+
+        if (!alreadyPaid) {
+          const commissionAmount =
+            Math.round((depositAmount * rates[level - 1] / 100) * 100) / 100;
+
+          const previousBalance = Number(parent.withdrawBalance) || 0;
+
+          parent.withdrawBalance =
+            Math.round((previousBalance + commissionAmount) * 100) / 100;
+
+          parent.referralProfit =
+            Math.round(((Number(parent.referralProfit) || 0) + commissionAmount) * 100) / 100;
+
+          parent.transactions.unshift({
+            id:
+              "REF-" +
+              Date.now() +
+              "-" +
+              level +
+              "-" +
+              Math.floor(Math.random() * 10000),
+
+            type: "referral_commission",
+            title: "پورسانت تیم سطح " + level,
+            amount: commissionAmount,
+            rate: rates[level - 1],
+            teamLevel: level,
+            sourceUserEmail: sourceUser.email,
+            sourceDepositId: sourceDepositId,
+            sourceDepositAmount: depositAmount,
+            status: "completed",
+            date: new Date().toISOString()
+          });
+
+          users[parentIndex] = parent;
+        }
+
+        parentEmail = normalizeReferralEmail(parent.referredBy);
+      }
+    }
+
+    function confirmTestDeposit() {
+
+      const depositInput =
+        document.getElementById(
+          "depositAmount"
+        );
+
+
+      const amount =
+        Number(depositInput.value);
+
+
+      if (
+        !Number.isFinite(amount) ||
+        amount <= 0
+      ) {
+
+        alert(
+          "مبلغ واریز را به‌درستی وارد کنید"
+        );
+
+        depositInput.focus();
+
+        return;
+
+      }
+
+
+      const roundedAmount =
+        Math.round(
+          amount * 100
+        ) / 100;
+
+
+      const confirmed =
+        confirm(
+          "آیا واریز " +
+          formatAmount(roundedAmount) +
+          " به‌عنوان تراکنش تأییدشده ثبت شود؟"
+        );
+
+
+      if (!confirmed) {
+        return;
+      }
+
+
+      const previousVip =
+        Number(user.activeVip) || 0;
+
+
+      user.investmentBalance +=
+        roundedAmount;
+
+
+      const newVip =
+        updateVipAutomatically();
+
+
+      const depositTransactionId =
+        "DEP-" +
+        Date.now() +
+        "-" +
+        Math.floor(
+          Math.random() * 10000
+        );
+
+
+      user.transactions.unshift({
+
+        id:
+          depositTransactionId,
+
+        type:
+          "investment_deposit",
+
+        title:
+          "واریز به سرمایه",
+
+        amount:
+          roundedAmount,
+
+        network:
+          "BEP20",
+
+        status:
+          "confirmed",
+
+        date:
+          new Date().toISOString()
+
+      });
+
+
+      restartProfitCycle(user);
+
+
+      distributeReferralCommissions(
+        user,
+        roundedAmount,
+        depositTransactionId
+      );
+
+
+      if (
+        previousVip === 0 &&
+        newVip > 0 &&
+        user.referredBy &&
+        window.ShayeWheel &&
+        typeof window.ShayeWheel.grantDirectReferralSpin === "function"
+      ) {
+        window.ShayeWheel.grantDirectReferralSpin(
+          user.referredBy,
+          user.email
+        );
+      }
+
+
+      if (newVip > previousVip) {
+
+        user.transactions.unshift({
+
+          id:
+            "VIP-" +
+            Date.now() +
+            "-" +
+            Math.floor(
+              Math.random() * 10000
+            ),
+
+          type:
+            "vip_upgrade",
+
+          title:
+            "ارتقا به VIP " +
+            newVip,
+
+          amount:
+            0,
+
+          fromVip:
+            previousVip,
+
+          toVip:
+            newVip,
+
+          status:
+            "completed",
+
+          date:
+            new Date().toISOString()
+
+        });
+
+      }
+
+
+      users[userIndex] = user;
+
+      saveUsers();
+
+
+      depositInput.value = "";
+
+
+      renderPage();
+
+
+      if (newVip > previousVip) {
+
+        alert(
+          "واریز با موفقیت ثبت شد.\n" +
+          "سرمایه جدید: " +
+          formatAmount(
+            user.investmentBalance
+          ) +
+          "\n" +
+          "VIP " +
+          newVip +
+          " به‌صورت خودکار فعال شد."
+        );
+
+      }
+      else {
+
+        const nextVip =
+          getNextVipLevel();
+
+
+        let message =
+          "واریز با موفقیت ثبت شد.\n" +
+          "سرمایه جدید: " +
+          formatAmount(
+            user.investmentBalance
+          );
+
+
+        if (nextVip) {
+
+          const remainingAmount =
+            Math.max(
+              0,
+              vipLevels[nextVip].amount -
+              user.investmentBalance
+            );
+
+
+          message +=
+            "\nبرای فعال‌شدن " +
+            vipLevels[nextVip].title +
+            " هنوز " +
+            formatAmount(
+              remainingAmount
+            ) +
+            " نیاز دارید.";
+
+        }
+
+
+        alert(message);
+
+      }
+
+    }
+
+  </script>
+
+  <script src="assets/js/auth-controls.js"></script>
+  <script src="assets/js/wheel-config.js"></script>
+  <script src="assets/js/lucky-wheel.js"></script>
+  <script src="assets/js/i18n.js"></script>
+  <script src="assets/js/v6.js"></script>
+  <script src="assets/js/premium.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#080c0f">
+  <title>وظایف روزانه | SHAYE</title>
+  <link rel="stylesheet" href="assets/css/dashboard.css">
+
+  <style>
+    .task-summary-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 11px;
+      margin-top: 14px;
+    }
+
+    .task-summary-item {
+      padding: 14px;
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 15px;
+      background: rgba(255,255,255,.035);
+    }
+
+    .task-summary-item span {
+      display: block;
+      margin-bottom: 7px;
+      font-size: 10px;
+      opacity: .68;
+    }
+
+    .task-summary-item strong {
+      display: block;
+      direction: ltr;
+      text-align: right;
+      font-size: 16px;
+    }
+
+    .task-tabs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      padding: 6px;
+      margin-bottom: 13px;
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 15px;
+      background: rgba(255,255,255,.035);
+    }
+
+    .task-tab {
+      min-height: 42px;
+      border: 0;
+      border-radius: 11px;
+      background: transparent;
+      color: rgba(255,255,255,.62);
+      font-family: inherit;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .task-tab.active {
+      color: #07130d;
+      background: #2ad382;
+    }
+
+    .task-section {
+      display: none;
+    }
+
+    .task-section.active {
+      display: block;
+    }
+
+    .mission-card {
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,.09);
+      border-radius: 18px;
+      background: rgba(255,255,255,.035);
+    }
+
+    .mission-image-wrap {
+      position: relative;
+      aspect-ratio: 16 / 9;
+      overflow: hidden;
+      background: #0c1115;
+    }
+
+    .mission-image {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: cover;
+    }
+
+    .mission-badge {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      padding: 7px 10px;
+      border-radius: 999px;
+      background: rgba(4,10,7,.78);
+      border: 1px solid rgba(42,211,130,.38);
+      color: #79efb4;
+      font-size: 10px;
+      font-weight: 900;
+      backdrop-filter: blur(8px);
+    }
+
+    .mission-content {
+      padding: 15px;
+    }
+
+    .mission-title-row {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 7px;
+    }
+
+    .mission-title {
+      margin: 0;
+      font-size: 16px;
+    }
+
+    .mission-reward {
+      direction: ltr;
+      white-space: nowrap;
+      color: #72e8aa;
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    .mission-description {
+      margin: 0 0 13px;
+      color: rgba(255,255,255,.66);
+      font-size: 11px;
+      line-height: 1.9;
+    }
+
+    .mission-meta {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 9px;
+      margin-bottom: 13px;
+    }
+
+    .mission-meta div {
+      padding: 10px;
+      border-radius: 12px;
+      background: rgba(255,255,255,.04);
+    }
+
+    .mission-meta span {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 9px;
+      opacity: .6;
+    }
+
+    .mission-meta strong {
+      display: block;
+      font-size: 11px;
+    }
+
+    .mission-card .btn-green {
+      width: 100%;
+      margin: 0;
+    }
+
+    .mission-card .btn-green[disabled] {
+      opacity: .48;
+      cursor: not-allowed;
+    }
+
+    .countdown-panel {
+      padding: 18px;
+      text-align: center;
+      border: 1px dashed rgba(255,255,255,.14);
+      border-radius: 17px;
+      background: rgba(255,255,255,.025);
+    }
+
+    .countdown-value {
+      margin: 12px 0 6px;
+      direction: ltr;
+      font-size: 29px;
+      font-weight: 900;
+      letter-spacing: 2px;
+    }
+
+    .countdown-text {
+      font-size: 11px;
+      opacity: .65;
+      line-height: 1.9;
+    }
+
+    .completed-list {
+      display: grid;
+      gap: 11px;
+    }
+
+    .completed-item {
+      display: grid;
+      grid-template-columns: 92px 1fr;
+      gap: 12px;
+      align-items: center;
+      padding: 10px;
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 15px;
+      background: rgba(255,255,255,.03);
+    }
+
+    .completed-item img {
+      width: 92px;
+      height: 70px;
+      object-fit: cover;
+      border-radius: 11px;
+      background: #0c1115;
+    }
+
+    .completed-item h4 {
+      margin: 0 0 6px;
+      font-size: 12px;
+    }
+
+    .completed-item p {
+      margin: 0 0 5px;
+      font-size: 10px;
+      opacity: .62;
+    }
+
+    .completed-item strong {
+      direction: ltr;
+      display: inline-block;
+      color: #75ecad;
+      font-size: 11px;
+    }
+
+    .empty-state {
+      padding: 25px 14px;
+      text-align: center;
+      border: 1px dashed rgba(255,255,255,.13);
+      border-radius: 16px;
+      font-size: 12px;
+      line-height: 2;
+      opacity: .67;
+    }
+
+    .task-message {
+      display: none;
+      margin-top: 12px;
+      padding: 12px;
+      border-radius: 12px;
+      text-align: center;
+      font-size: 11px;
+      line-height: 1.9;
+    }
+
+    .task-message.success {
+      display: block;
+      color: #7ff0b5;
+      background: rgba(42,211,130,.09);
+      border: 1px solid rgba(42,211,130,.25);
+    }
+
+    .task-message.warning {
+      display: block;
+      color: #ffd76a;
+      background: rgba(255,193,7,.07);
+      border: 1px solid rgba(255,193,7,.22);
+    }
+
+    .task-message.error {
+      display: block;
+      color: #ff9b9b;
+      background: rgba(255,107,107,.08);
+      border: 1px solid rgba(255,107,107,.25);
+    }
+
+    .task-note {
+      margin-top: 13px;
+      font-size: 10px;
+      line-height: 1.9;
+      opacity: .58;
+    }
+
+    @media (max-width: 390px) {
+      .completed-item {
+        grid-template-columns: 78px 1fr;
+      }
+
+      .completed-item img {
+        width: 78px;
+        height: 64px;
+      }
+    }
+  </style>
+  <link rel="stylesheet" href="assets/css/lucky-wheel.css">
+  <link rel="stylesheet" href="assets/css/i18n.css">
+  <link rel="stylesheet" href="assets/css/v6.css">
+  <link rel="stylesheet" href="assets/css/premium.css">
+</head>
+
+<body>
+  <header class="main-header">
+    <div class="logo-container">
+      <div class="custom-logo">S</div>
+      <div class="brand-name">SHAYE</div>
+    </div>
+    <button type="button" class="logout-button" data-logout>خروج از حساب</button>
+  </header>
+
+  <main class="dashboard-container">
+    <section class="welcome">
+      <h2>وظایف روزانه 📋</h2>
+      <p>هر روز یک وظیفه تصویری دریافت کنید و پس از تکمیل، سود VIP خود را بگیرید.</p>
+    </section>
+
+    <section class="card">
+      <h3 class="section-title">خلاصه حساب</h3>
+      <div class="task-summary-grid">
+        <div class="task-summary-item">
+          <span>VIP فعال</span>
+          <strong id="summaryVip">VIP 0</strong>
+        </div>
+        <div class="task-summary-item">
+          <span>پاداش وظیفه</span>
+          <strong id="summaryReward">0 USDT</strong>
+        </div>
+        <div class="task-summary-item">
+          <span>موجودی برداشت</span>
+          <strong id="summaryWithdraw">0 USDT</strong>
+        </div>
+        <div class="task-summary-item">
+          <span>وظایف تکمیل‌شده</span>
+          <strong id="summaryCompleted">0</strong>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="task-tabs">
+        <button type="button" class="task-tab active" data-task-tab="activeTasks">
+          وظایف در حال انجام
+        </button>
+        <button type="button" class="task-tab" data-task-tab="completedTasks">
+          وظایف انجام‌شده
+        </button>
+      </div>
+
+      <div class="task-section active" id="activeTasks">
+        <div id="activeTaskContainer"></div>
+        <div class="task-message" id="taskMessage"></div>
+      </div>
+
+      <div class="task-section" id="completedTasks">
+        <div class="completed-list" id="completedTaskList"></div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h3 class="section-title">قوانین وظیفه</h3>
+      <p class="task-note">
+        وظیفه روزانه در بازه ساعت ۱۶ تا ساعت ۱۶ روز بعد قابل انجام است.
+        تنها بالاترین سطح VIP کاربر فعال می‌ماند و پاداش بر اساس همان سطح محاسبه می‌شود.
+        پس از تکمیل، وظیفه به بخش «وظایف انجام‌شده» منتقل خواهد شد.
+        تصاویر فعلی نمونه هستند و بعداً با عکس‌های اصلی شما جایگزین می‌شوند.
+      </p>
+    </section>
+  </main>
+
+  <nav class="bottom-nav" aria-label="منوی اصلی">
+    <button type="button" data-page="dashboard.html"><span>🏠</span><span>خانه</span></button>
+    <button type="button" data-page="wallet.html"><span>💳</span><span>کیف پول</span></button>
+    <button type="button" data-page="team.html"><span>👥</span><span>تیم</span></button>
+    <button type="button" data-page="tasks.html" class="active"><span>📋</span><span>وظایف</span></button>
+    <button type="button" data-page="report.html"><span>📊</span><span>گزارش</span></button>
+  </nav>
+
+  <script src="assets/js/navigation.js"></script>
+  <script src="assets/js/config.js"></script>
+  <script>
+    "use strict";
+
+    var USERS_KEY = "shaye_users";
+    var CURRENT_USER_KEY = "shaye_current_user";
+
+    var TASK_IMAGES = [
+      "assets/images/tasks/task-01.svg",
+      "assets/images/tasks/task-02.svg",
+      "assets/images/tasks/task-03.svg",
+      "assets/images/tasks/task-04.svg",
+      "assets/images/tasks/task-05.svg"
+    ];
+
+    var users = [];
+    var user = null;
+    var userIndex = -1;
+    var timer = null;
+
+    function normalizeEmail(value) {
+      return String(value || "").trim().toLowerCase();
+    }
+
+    function loadUsers() {
+      try {
+        var value = JSON.parse(localStorage.getItem(USERS_KEY) || "[]");
+        return Array.isArray(value) ? value : [];
+      } catch (error) {
+        return [];
+      }
+    }
+
+    function saveUsers() {
+      users[userIndex] = user;
+      localStorage.setItem(USERS_KEY, JSON.stringify(users));
+    }
+
+    function roundMoney(value) {
+      return Math.round((Number(value) || 0) * 100) / 100;
+    }
+
+    function formatAmount(value) {
+      return roundMoney(value).toLocaleString("en-US", {
+        maximumFractionDigits: 2
+      }) + " USDT";
+    }
+
+    function pad(value) {
+      return Number(value) < 10 ? "0" + Number(value) : String(value);
+    }
+
+    function escapeHtml(value) {
+      return String(value || "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+
+    function showMessage(text, type) {
+      var element = document.getElementById("taskMessage");
+      element.textContent = text;
+      element.className = "task-message " + type;
+    }
+
+    function clearMessage() {
+      var element = document.getElementById("taskMessage");
+      element.textContent = "";
+      element.className = "task-message";
+    }
+
+    function getTaskWindow(now) {
+      var start = new Date(now.getTime());
+      start.setHours(16, 0, 0, 0);
+
+      if (now.getTime() < start.getTime()) {
+        start.setDate(start.getDate() - 1);
+      }
+
+      var end = new Date(start.getTime());
+      end.setDate(end.getDate() + 1);
+
+      return {
+        id:
+          start.getFullYear() + "-" +
+          pad(start.getMonth() + 1) + "-" +
+          pad(start.getDate()) + "-16",
+        start: start,
+        end: end
+      };
+    }
+
+    function hashText(text) {
+      var hash = 0;
+
+      for (var index = 0; index < text.length; index++) {
+        hash = ((hash << 5) - hash) + text.charCodeAt(index);
+        hash |= 0;
+      }
+
+      return Math.abs(hash);
+    }
+
+    function getImageForTask(taskId) {
+      if (!user.taskImageAssignments ||
+          typeof user.taskImageAssignments !== "object") {
+        user.taskImageAssignments = {};
+      }
+
+      if (!user.taskImageAssignments[taskId]) {
+        var seed = normalizeEmail(user.email) + "|" + taskId;
+        user.taskImageAssignments[taskId] =
+          TASK_IMAGES[hashText(seed) % TASK_IMAGES.length];
+        saveUsers();
+      }
+
+      return user.taskImageAssignments[taskId];
+    }
+
+    function migrateUser() {
+      var settings = ShayeConfig.load();
+
+      user.investmentBalance =
+        Number(user.investmentBalance) ||
+        Number(user.investment) ||
+        0;
+
+      user.withdrawBalance =
+        Number(user.withdrawBalance) ||
+        Number(user.withdrawableBalance) ||
+        Number(user.profit) ||
+        0;
+
+      user.dailyProfit = Number(user.dailyProfit) || 0;
+      user.profitDaysClaimed = Number(user.profitDaysClaimed) || 0;
+      user.lastTaskClaimId = String(user.lastTaskClaimId || "");
+      user.activeVip = ShayeConfig.detectVip(
+        user.investmentBalance,
+        settings
+      );
+
+      if (!Array.isArray(user.transactions)) {
+        user.transactions = [];
+      }
+
+      if (!Array.isArray(user.completedTasks)) {
+        user.completedTasks = [];
+      }
+
+      if (!user.taskImageAssignments ||
+          typeof user.taskImageAssignments !== "object") {
+        user.taskImageAssignments = {};
+      }
+
+      saveUsers();
+    }
+
+    function getCycleState(now) {
+      var settings = ShayeConfig.load();
+
+      if (Number(user.activeVip) < 1) {
+        return { active: false, reason: "no_vip", expiry: null };
+      }
+
+      var activation = new Date(user.vipActivatedAt || "");
+      var expiry = new Date(user.vipExpiresAt || "");
+
+      if (isNaN(activation.getTime())) {
+        activation = new Date(user.createdAt || now);
+        user.vipActivatedAt = activation.toISOString();
+      }
+
+      if (isNaN(expiry.getTime())) {
+        expiry = new Date(activation.getTime());
+        expiry.setDate(expiry.getDate() + settings.cycleDays);
+        user.vipExpiresAt = expiry.toISOString();
+        saveUsers();
+      }
+
+      if (now.getTime() >= expiry.getTime()) {
+        return { active: false, reason: "expired", expiry: expiry };
+      }
+
+      return { active: true, reason: "active", expiry: expiry };
+    }
+
+    function rewardInfo() {
+      var settings = ShayeConfig.load();
+      return ShayeConfig.rewardForVip(
+        Number(user.activeVip) || 0,
+        settings
+      );
+    }
+
+    function formatDate(value) {
+      try {
+        return new Date(value).toLocaleString("fa-IR");
+      } catch (error) {
+        return new Date(value).toLocaleString();
+      }
+    }
+
+    function countdownMarkup(title, description) {
+      return (
+        '<div class="countdown-panel">' +
+          '<strong>' + escapeHtml(title) + '</strong>' +
+          '<div class="countdown-value" id="taskCountdown">--:--:--</div>' +
+          '<div class="countdown-text">' + escapeHtml(description) + '</div>' +
+        '</div>'
+      );
+    }
+
+    function renderActiveTask() {
+      var now = new Date();
+      var task = getTaskWindow(now);
+      var cycle = getCycleState(now);
+      var info = rewardInfo();
+      var claimed = user.lastTaskClaimId === task.id;
+      var container = document.getElementById("activeTaskContainer");
+
+      if (!cycle.active) {
+        if (cycle.reason === "expired") {
+          container.innerHTML = countdownMarkup(
+            "دوره VIP پایان یافته است",
+            "برای شروع دوره جدید، یک واریز تازه انجام دهید."
+          );
+        } else {
+          container.innerHTML = countdownMarkup(
+            "همه VIPها قفل هستند",
+            "پس از رسیدن مجموع واریز به حداقل VIP 1، وظیفه روزانه فعال می‌شود."
+          );
+        }
+        return;
+      }
+
+      if (claimed) {
+        container.innerHTML = countdownMarkup(
+          "وظیفه این بازه انجام شده است",
+          "وظیفه بعدی رأس ساعت ۱۶ در همین بخش نمایش داده می‌شود."
+        );
+        return;
+      }
+
+      if (info.reward <= 0) {
+        container.innerHTML = countdownMarkup(
+          "پاداش این VIP صفر است",
+          "مدیر باید درصد سود روزانه این سطح را بررسی کند."
+        );
+        return;
+      }
+
+      var image = getImageForTask(task.id);
+
+      container.innerHTML =
+        '<article class="mission-card">' +
+          '<div class="mission-image-wrap">' +
+            '<img class="mission-image" src="' + escapeHtml(image) + '" alt="تصویر وظیفه روزانه">' +
+            '<span class="mission-badge">آماده انجام</span>' +
+          '</div>' +
+          '<div class="mission-content">' +
+            '<div class="mission-title-row">' +
+              '<h3 class="mission-title">وظیفه روزانه VIP ' + Number(user.activeVip) + '</h3>' +
+              '<strong class="mission-reward">+' + escapeHtml(formatAmount(info.reward)) + '</strong>' +
+            '</div>' +
+            '<p class="mission-description">' +
+              'تصویر را مشاهده کنید و سپس دکمه «تکمیل وظیفه» را لمس کنید. ' +
+              'پاداش بلافاصله به موجودی قابل برداشت افزوده می‌شود.' +
+            '</p>' +
+            '<div class="mission-meta">' +
+              '<div><span>سطح فعال</span><strong>VIP ' + Number(user.activeVip) + '</strong></div>' +
+              '<div><span>پایان فرصت</span><strong>' + escapeHtml(formatDate(task.end)) + '</strong></div>' +
+            '</div>' +
+            '<button type="button" class="btn-green" id="completeTaskButton">تکمیل وظیفه</button>' +
+          '</div>' +
+        '</article>';
+
+      document.getElementById("completeTaskButton")
+        .addEventListener("click", completeTask);
+    }
+
+    function renderCompletedTasks() {
+      var list = document.getElementById("completedTaskList");
+      var tasks = user.completedTasks.slice().sort(function (a, b) {
+        return new Date(b.completedAt) - new Date(a.completedAt);
+      });
+
+      if (!tasks.length) {
+        list.innerHTML =
+          '<div class="empty-state">' +
+            'هنوز وظیفه‌ای تکمیل نشده است.<br>' +
+            'بعد از تکمیل اولین وظیفه، سابقه آن در این بخش نمایش داده می‌شود.' +
+          '</div>';
+        return;
+      }
+
+      var html = "";
+
+      for (var index = 0; index < tasks.length; index++) {
+        var item = tasks[index];
+
+        html +=
+          '<article class="completed-item">' +
+            '<img src="' + escapeHtml(item.image) + '" alt="وظیفه انجام‌شده">' +
+            '<div>' +
+              '<h4>' + escapeHtml(item.title || "وظیفه روزانه") + '</h4>' +
+              '<p>' + escapeHtml(formatDate(item.completedAt)) + '</p>' +
+              '<strong>+' + escapeHtml(formatAmount(item.reward)) + '</strong>' +
+            '</div>' +
+          '</article>';
+      }
+
+      list.innerHTML = html;
+    }
+
+    function renderSummary() {
+      var info = rewardInfo();
+
+      document.getElementById("summaryVip").textContent =
+        Number(user.activeVip) > 0 ? "VIP " + user.activeVip : "بدون VIP";
+
+      document.getElementById("summaryReward").textContent =
+        formatAmount(info.reward);
+
+      document.getElementById("summaryWithdraw").textContent =
+        formatAmount(user.withdrawBalance);
+
+      document.getElementById("summaryCompleted").textContent =
+        String(user.completedTasks.length);
+    }
+
+    function renderPage() {
+      renderSummary();
+      renderActiveTask();
+      renderCompletedTasks();
+      updateCountdown();
+    }
+
+    function completeTask() {
+      clearMessage();
+
+      users = loadUsers();
+      var currentEmail = normalizeEmail(
+        localStorage.getItem(CURRENT_USER_KEY)
+      );
+
+      userIndex = users.findIndex(function (candidate) {
+        return normalizeEmail(candidate.email) === currentEmail;
+      });
+
+      if (userIndex < 0) {
+        showMessage("حساب کاربری پیدا نشد.", "error");
+        return;
+      }
+
+      user = users[userIndex];
+      migrateUser();
+
+      var now = new Date();
+      var task = getTaskWindow(now);
+      var cycle = getCycleState(now);
+      var info = rewardInfo();
+
+      if (!cycle.active) {
+        showMessage("VIP یا دوره سود شما فعال نیست.", "warning");
+        renderPage();
+        return;
+      }
+
+      if (user.lastTaskClaimId === task.id) {
+        showMessage("این وظیفه قبلاً تکمیل شده است.", "warning");
+        renderPage();
+        return;
+      }
+
+      if (info.reward <= 0) {
+        showMessage("پاداش این وظیفه صفر است.", "warning");
+        renderPage();
+        return;
+      }
+
+      var image = getImageForTask(task.id);
+      var transactionId =
+        "TASK-" + Date.now() + "-" + Math.floor(Math.random() * 10000);
+
+      user.withdrawBalance = roundMoney(
+        Number(user.withdrawBalance || 0) + Number(info.reward)
+      );
+
+      user.dailyProfit = roundMoney(
+        Number(user.dailyProfit || 0) + Number(info.reward)
+      );
+
+      user.profitDaysClaimed =
+        Number(user.profitDaysClaimed || 0) + 1;
+
+      user.lastTaskClaimId = task.id;
+      user.lastTaskClaimedAt = now.toISOString();
+
+      user.completedTasks.unshift({
+        id: transactionId,
+        taskId: task.id,
+        title: "وظیفه روزانه VIP " + user.activeVip,
+        image: image,
+        vip: Number(user.activeVip),
+        reward: Number(info.reward),
+        completedAt: now.toISOString()
+      });
+
+      user.transactions.unshift({
+        id: transactionId,
+        type: "task_profit",
+        title: "پاداش تکمیل وظیفه روزانه",
+        amount: Number(info.reward),
+        vip: Number(user.activeVip),
+        taskId: task.id,
+        image: image,
+        status: "completed",
+        date: now.toISOString()
+      });
+
+      saveUsers();
+      showMessage(
+        "وظیفه تکمیل شد و " +
+        formatAmount(info.reward) +
+        " به موجودی قابل برداشت اضافه شد.",
+        "success"
+      );
+
+      renderPage();
+    }
+
+    function updateCountdown() {
+      var element = document.getElementById("taskCountdown");
+      if (!element || !user) return;
+
+      var now = new Date();
+      var task = getTaskWindow(now);
+      var distance = Math.max(0, task.end.getTime() - now.getTime());
+      var secondsTotal = Math.floor(distance / 1000);
+
+      var hours = Math.floor(secondsTotal / 3600);
+      var minutes = Math.floor((secondsTotal % 3600) / 60);
+      var seconds = secondsTotal % 60;
+
+      element.textContent =
+        pad(hours) + ":" + pad(minutes) + ":" + pad(seconds);
+
+      if (distance <= 1000) {
+        loadCurrentUser();
+        renderPage();
+      }
+    }
+
+    function setupTabs() {
+      var tabs = document.querySelectorAll("[data-task-tab]");
+
+      for (var index = 0; index < tabs.length; index++) {
+        tabs[index].addEventListener("click", function () {
+          var targetId = this.getAttribute("data-task-tab");
+
+          document.querySelectorAll(".task-tab").forEach(function (tab) {
+            tab.classList.remove("active");
+          });
+
+          document.querySelectorAll(".task-section").forEach(function (section) {
+            section.classList.remove("active");
+          });
+
+          this.classList.add("active");
+          document.getElementById(targetId).classList.add("active");
+        });
+      }
+    }
+
+    function loadCurrentUser() {
+      var currentEmail = normalizeEmail(
+        localStorage.getItem(CURRENT_USER_KEY)
+      );
+
+      if (!currentEmail) {
+        window.location.replace("index.html");
+        return false;
+      }
+
+      users = loadUsers();
+
+      userIndex = users.findIndex(function (candidate) {
+        return normalizeEmail(candidate.email) === currentEmail;
+      });
+
+      if (userIndex < 0) {
+        localStorage.removeItem(CURRENT_USER_KEY);
+        window.location.replace("index.html");
+        return false;
+      }
+
+      user = users[userIndex];
+      migrateUser();
+      return true;
+    }
+
+    function initialize() {
+      if (!loadCurrentUser()) return;
+
+      setupTabs();
+      renderPage();
+
+      if (timer) clearInterval(timer);
+      timer = setInterval(updateCountdown, 1000);
+    }
+
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", initialize);
+    } else {
+      initialize();
+    }
+  </script>
+  <script src="assets/js/auth-controls.js"></script>
+  <script src="assets/js/wheel-config.js"></script>
+  <script src="assets/js/lucky-wheel.js"></script>
+  <script src="assets/js/i18n.js"></script>
+  <script src="assets/js/v6.js"></script>
+  <script src="assets/js/premium.js"></script>
+</body>
+</html>

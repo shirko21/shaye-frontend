@@ -1,0 +1,210 @@
+/* SHAYE Premium V6.1 */
+.premium-home-tools{left:14px!important;right:auto!important;bottom:92px!important;display:flex!important;flex-direction:column!important}.shaye-language-switcher{left:14px!important;right:auto!important;bottom:276px!important}.premium-chat-badge{background:#ff304f!important;box-shadow:0 0 0 3px rgba(255,48,79,.18);animation:premiumPulse 1.4s infinite}@keyframes premiumPulse{50%{transform:scale(1.16);box-shadow:0 0 0 7px rgba(255,48,79,0)}}
+.bottom-nav{background:rgba(10,18,24,.88)!important;border:1px solid rgba(255,255,255,.11)!important;box-shadow:0 -12px 40px rgba(0,0,0,.35)!important;backdrop-filter:blur(18px);border-radius:24px 24px 0 0!important;padding-top:7px!important}.bottom-nav a,.bottom-nav button{transition:transform .25s ease,filter .25s ease,color .25s ease!important;position:relative}.bottom-nav a:hover,.bottom-nav a.active,.bottom-nav button:hover{transform:translateY(-7px) scale(1.08);filter:drop-shadow(0 7px 12px rgba(42,211,130,.28))}.bottom-nav a:active,.bottom-nav button:active{transform:translateY(-3px) scale(.93)}.bottom-nav a::before{content:"";position:absolute;left:50%;bottom:-4px;width:5px;height:5px;border-radius:50%;background:#2ad382;opacity:0;transform:translateX(-50%) scale(0);transition:.25s}.bottom-nav a.active::before{opacity:1;transform:translateX(-50%) scale(1);box-shadow:0 0 10px #2ad382}
+.premium-home-content{display:grid;gap:15px;margin-bottom:18px}.premium-glass{border:1px solid rgba(255,255,255,.11);background:linear-gradient(145deg,rgba(255,255,255,.075),rgba(255,255,255,.025));box-shadow:0 18px 45px rgba(0,0,0,.18);backdrop-filter:blur(15px)}.premium-slider{position:relative;min-height:190px;border-radius:22px;overflow:hidden;border:1px solid rgba(255,255,255,.12);box-shadow:0 18px 45px rgba(0,0,0,.28)}.premium-slide{position:absolute;inset:0;opacity:0;pointer-events:none;transition:opacity .55s ease,transform .7s ease;transform:scale(1.035)}.premium-slide.active{opacity:1;pointer-events:auto;transform:scale(1)}.premium-slide img{width:100%;height:100%;object-fit:cover}.premium-slide:after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,rgba(0,0,0,.82),transparent 65%)}.premium-slide-caption{position:absolute;z-index:2;left:18px;right:18px;bottom:26px;color:#fff;display:grid;gap:5px}.premium-slide-caption b{font-size:18px}.premium-slide-caption span{font-size:12px;opacity:.82}.premium-dots{position:absolute;z-index:3;bottom:9px;left:50%;transform:translateX(-50%);display:flex;gap:5px}.premium-dots button{width:7px;height:7px;padding:0;border:0;border-radius:99px;background:rgba(255,255,255,.45);transition:.3s}.premium-dots button.active{width:22px;background:#2ad382}.premium-company-card{display:grid;grid-template-columns:auto 1fr auto;gap:14px;align-items:center;padding:16px;border-radius:20px}.premium-company-logo{width:60px;height:60px;object-fit:contain;border-radius:16px;background:rgba(255,255,255,.06)}.premium-company-card h3{margin:0 0 7px}.premium-company-card p{margin:0;line-height:1.9;font-size:12px;opacity:.78}.premium-company-meta{display:flex;flex-wrap:wrap;gap:7px;margin-top:9px}.premium-company-meta span{font-size:10px;padding:5px 8px;border-radius:999px;background:rgba(42,211,130,.09);border:1px solid rgba(42,211,130,.18)}.premium-office{width:110px;height:82px;object-fit:cover;border-radius:14px}.premium-block>h3{margin:0 0 10px;font-size:15px}.premium-news-grid{display:grid;gap:9px}.premium-news{display:grid;grid-template-columns:auto 1fr;gap:12px;padding:11px;border-radius:16px;transition:.25s}.premium-news:hover{transform:translateY(-3px)}.premium-news img{width:74px;height:68px;object-fit:cover;border-radius:12px}.premium-news b{font-size:13px}.premium-news p{font-size:11px;line-height:1.8;margin:5px 0;opacity:.78}.premium-news small{opacity:.5}.premium-license-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}.premium-license{border-radius:16px;padding:8px;color:inherit;cursor:pointer}.premium-license img{width:100%;height:110px;object-fit:cover;border-radius:11px}.premium-license span{display:block;font-size:10px;margin-top:6px}.premium-docs{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}.premium-doc{padding:12px;border-radius:14px;display:flex;align-items:center;gap:9px;color:inherit;text-decoration:none;transition:.25s}.premium-doc:hover{transform:translateY(-3px);border-color:rgba(42,211,130,.4)}.premium-image-viewer{position:fixed;inset:0;z-index:10050;background:rgba(0,0,0,.9);display:grid;place-items:center;padding:20px}.premium-image-viewer img{max-width:95vw;max-height:88vh;border-radius:15px}.premium-image-viewer button{position:fixed;top:18px;right:18px;width:42px;height:42px;border-radius:50%;border:0;font-size:24px}
+.premium-admin{margin-top:16px}.premium-admin-tabs{display:flex;gap:7px;overflow:auto;margin:13px 0}.premium-admin-tabs button{white-space:nowrap;padding:9px 12px;border-radius:11px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04);color:inherit;font-family:inherit}.premium-admin-tabs button.active{background:rgba(42,211,130,.13);border-color:rgba(42,211,130,.35);color:#79efb5}.premium-pa-page{display:none}.premium-pa-page.active{display:block;animation:v6fade .25s ease}.premium-pa-page label{display:block;margin-top:10px;font-size:11px;opacity:.82}.premium-pa-page input,.premium-pa-page textarea{width:100%;margin-top:6px;min-height:42px;border-radius:11px;padding:9px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04);color:inherit;font-family:inherit}.premium-pa-page textarea{min-height:92px}.premium-save{width:100%;min-height:44px;margin:12px 0;border:0;border-radius:12px;background:#2ad382;color:#03140c;font-weight:900}.premium-admin-row{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:10px;border:1px solid rgba(255,255,255,.08);border-radius:12px;margin-top:7px}.premium-admin-row small{display:block;opacity:.55;margin-top:3px}.premium-admin-row button{border:1px solid rgba(255,80,100,.25);background:rgba(255,80,100,.08);color:#ff9bab;border-radius:9px;padding:7px 10px}.premium-empty{padding:13px;opacity:.5;text-align:center}.premium-toast{position:fixed;left:50%;bottom:105px;transform:translateX(-50%);z-index:11000;background:#2ad382;color:#03140c;padding:10px 18px;border-radius:99px;font-weight:900;box-shadow:0 10px 30px rgba(0,0,0,.3)}
+@media(max-width:620px){.premium-company-card{grid-template-columns:auto 1fr}.premium-office{grid-column:1/-1;width:100%;height:135px}.premium-license-grid{grid-template-columns:repeat(2,1fr)}.premium-slider{min-height:165px}.premium-home-tools{left:10px!important}.shaye-language-switcher{left:10px!important}.premium-docs{grid-template-columns:1fr}}
+
+/* =========================================================
+   SHAYE Premium V6.2 — Floating App Bottom Navigation
+   Always visible, mobile safe-area aware, animated and glassy.
+========================================================= */
+:root{
+  --shaye-nav-height:72px;
+  --shaye-nav-bottom:12px;
+}
+
+html,body{min-height:100%;}
+body{
+  padding-bottom:calc(var(--shaye-nav-height) + var(--shaye-nav-bottom) + env(safe-area-inset-bottom) + 28px)!important;
+}
+main,.container,.page,.app-shell{
+  scroll-margin-bottom:calc(var(--shaye-nav-height) + 30px);
+}
+
+.bottom-nav{
+  position:fixed!important;
+  left:50%!important;
+  right:auto!important;
+  bottom:calc(var(--shaye-nav-bottom) + env(safe-area-inset-bottom))!important;
+  top:auto!important;
+  transform:translateX(-50%)!important;
+  z-index:9992!important;
+  width:min(94vw,560px)!important;
+  height:var(--shaye-nav-height)!important;
+  min-height:var(--shaye-nav-height)!important;
+  display:grid!important;
+  grid-template-columns:repeat(5,minmax(0,1fr))!important;
+  align-items:center!important;
+  justify-content:stretch!important;
+  gap:4px!important;
+  margin:0!important;
+  padding:7px 8px!important;
+  overflow:visible!important;
+  border:1px solid rgba(255,255,255,.13)!important;
+  border-radius:24px!important;
+  background:linear-gradient(145deg,rgba(20,31,38,.88),rgba(7,12,16,.94))!important;
+  box-shadow:0 18px 48px rgba(0,0,0,.46),0 4px 16px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.08)!important;
+  backdrop-filter:blur(24px) saturate(145%)!important;
+  -webkit-backdrop-filter:blur(24px) saturate(145%)!important;
+  isolation:isolate;
+}
+
+.bottom-nav::after{
+  content:"";
+  position:absolute;
+  inset:8px 14%;
+  z-index:-1;
+  border-radius:999px;
+  background:radial-gradient(circle,rgba(42,211,130,.12),transparent 70%);
+  filter:blur(14px);
+  pointer-events:none;
+}
+
+.bottom-nav button{
+  position:relative!important;
+  width:100%!important;
+  min-width:0!important;
+  height:58px!important;
+  min-height:58px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:3px!important;
+  margin:0!important;
+  padding:5px 2px!important;
+  border:0!important;
+  border-radius:18px!important;
+  background:transparent!important;
+  color:rgba(224,235,231,.62)!important;
+  font-family:inherit!important;
+  font-size:10px!important;
+  font-weight:800!important;
+  line-height:1.1!important;
+  cursor:pointer!important;
+  -webkit-tap-highlight-color:transparent;
+  transition:transform .22s cubic-bezier(.2,.8,.2,1),color .22s ease,background .22s ease,filter .22s ease!important;
+}
+.bottom-nav button::before{
+  content:""!important;
+  position:absolute!important;
+  left:50%!important;
+  bottom:1px!important;
+  top:auto!important;
+  width:0!important;
+  height:3px!important;
+  border-radius:999px!important;
+  transform:translateX(-50%)!important;
+  background:#2ad382!important;
+  box-shadow:0 0 14px rgba(42,211,130,.8)!important;
+  opacity:0!important;
+  transition:width .24s ease,opacity .24s ease!important;
+}
+.bottom-nav button .nav-icon,
+.bottom-nav button>span:first-child{
+  display:grid!important;
+  place-items:center!important;
+  width:31px!important;
+  height:31px!important;
+  font-size:21px!important;
+  line-height:1!important;
+  transform-origin:center bottom;
+  transition:transform .25s cubic-bezier(.2,.9,.2,1),filter .25s ease!important;
+}
+.bottom-nav button .nav-label,
+.bottom-nav button>span:last-child{
+  display:block!important;
+  white-space:nowrap!important;
+  font-size:9.5px!important;
+  line-height:1!important;
+  opacity:.84;
+}
+.bottom-nav button br{display:none!important;}
+.bottom-nav button:active{transform:scale(.9)!important;}
+.bottom-nav button:hover{color:rgba(255,255,255,.9)!important;background:rgba(255,255,255,.045)!important;}
+.bottom-nav button.active{
+  color:#72efb0!important;
+  background:linear-gradient(180deg,rgba(42,211,130,.16),rgba(42,211,130,.035))!important;
+  transform:translateY(-7px)!important;
+  box-shadow:0 10px 24px rgba(42,211,130,.10),inset 0 0 0 1px rgba(42,211,130,.11)!important;
+}
+.bottom-nav button.active::before{width:25px!important;opacity:1!important;}
+.bottom-nav button.active .nav-icon,
+.bottom-nav button.active>span:first-child{
+  transform:translateY(-1px) scale(1.16)!important;
+  filter:drop-shadow(0 0 9px rgba(42,211,130,.5))!important;
+  animation:shayeNavPop .38s cubic-bezier(.18,.9,.22,1.2) both;
+}
+@keyframes shayeNavPop{
+  0%{transform:translateY(4px) scale(.76)}
+  65%{transform:translateY(-3px) scale(1.24)}
+  100%{transform:translateY(-1px) scale(1.16)}
+}
+
+html[data-theme="light"] .bottom-nav{
+  border-color:rgba(19,62,44,.12)!important;
+  background:linear-gradient(145deg,rgba(255,255,255,.91),rgba(242,249,246,.96))!important;
+  box-shadow:0 18px 42px rgba(22,61,45,.17),inset 0 1px 0 #fff!important;
+}
+html[data-theme="light"] .bottom-nav button{color:rgba(25,62,48,.61)!important;}
+html[data-theme="light"] .bottom-nav button:hover{color:#173d2e!important;background:rgba(22,112,76,.05)!important;}
+html[data-theme="light"] .bottom-nav button.active{color:#0b9e5a!important;background:linear-gradient(180deg,rgba(42,211,130,.17),rgba(42,211,130,.05))!important;}
+
+@media(max-width:390px){
+  :root{--shaye-nav-height:68px;--shaye-nav-bottom:8px}
+  .bottom-nav{width:calc(100vw - 14px)!important;padding:6px 5px!important;border-radius:21px!important;}
+  .bottom-nav button{height:55px!important;min-height:55px!important;}
+  .bottom-nav button .nav-icon,.bottom-nav button>span:first-child{font-size:19px!important;width:28px!important;height:28px!important;}
+  .bottom-nav button .nav-label,.bottom-nav button>span:last-child{font-size:8.5px!important;}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .bottom-nav,.bottom-nav *{animation:none!important;transition:none!important;}
+}
+
+
+/* =========================================================
+   SHAYE Premium V6.3 — True viewport-fixed bottom navigation
+   Keep the navigation attached to the phone screen at all scroll positions.
+========================================================= */
+html, body {
+  transform: none !important;
+  translate: none !important;
+  perspective: none !important;
+  filter: none !important;
+  contain: none !important;
+}
+body {
+  animation-name: v6fade !important;
+}
+.bottom-nav {
+  position: fixed !important;
+  inset-inline: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  top: auto !important;
+  transform: none !important;
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  border-radius: 22px 22px 0 0 !important;
+  padding-bottom: max(7px, env(safe-area-inset-bottom)) !important;
+  height: calc(var(--shaye-nav-height) + env(safe-area-inset-bottom)) !important;
+  z-index: 2147483000 !important;
+  will-change: auto !important;
+}
+body {
+  padding-bottom: calc(var(--shaye-nav-height) + env(safe-area-inset-bottom) + 30px) !important;
+}
+@media (min-width: 700px) {
+  .bottom-nav {
+    left: 50% !important;
+    right: auto !important;
+    bottom: 10px !important;
+    width: min(94vw, 560px) !important;
+    transform: translateX(-50%) !important;
+    border-radius: 24px !important;
+  }
+}

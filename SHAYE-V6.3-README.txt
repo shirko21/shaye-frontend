@@ -1,0 +1,8 @@
+SHAYE Premium V6.3
+
+Fix:
+- Bottom navigation is now truly attached to the viewport, like the top SHAYE header.
+- It stays visible when the user is at the top, middle, or bottom of every main page.
+- Removed the body transform animation that caused fixed elements to scroll in some Android WebViews.
+- Added a defensive navigation script for SPCK/Android WebView compatibility.
+- Added safe bottom spacing so page content is not hidden behind the navigation.
