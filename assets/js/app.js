@@ -2,9 +2,38 @@
 
 const USERS_KEY = "shaye_users";
 const CURRENT_USER_KEY = "shaye_current_user";
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 function normalizeEmail(value) {
   return String(value || "").trim().toLowerCase();
+}
+
+function normalizeUsername(value) {
+  return String(value || "").trim().toLowerCase();
+}
+
+function createAvailableUsername(email, users, currentUser) {
+  let base = normalizeEmail(email)
+    .split("@")[0]
+    .replace(/[^a-zA-Z0-9_.-]/g, "")
+    .slice(0, 24)
+    .toLowerCase();
+
+  if (base.length < 3) base = "user";
+
+  let candidate = base;
+  let suffix = 1;
+
+  while (
+    users.some(function (user) {
+      return user !== currentUser && normalizeUsername(user.username) === candidate;
+    })
+  ) {
+    candidate = (base + suffix).slice(0, 32);
+    suffix += 1;
+  }
+
+  return candidate;
 }
 
 function loadUsers() {
@@ -67,6 +96,24 @@ function findReferrer(users, inviteCode) {
 function migrateUser(user, users) {
   let changed = false;
 
+  if (!user.fullname) {
+    user.fullname =
+      String(user.name || "").trim() ||
+      normalizeEmail(user.email).split("@")[0] ||
+      "User";
+    changed = true;
+  }
+
+  if (!user.username) {
+    user.username = createAvailableUsername(user.email, users, user);
+    changed = true;
+  }
+
+  if (typeof user.phone !== "string") {
+    user.phone = "";
+    changed = true;
+  }
+
   if (!user.referralCode) {
     user.referralCode = createReferralCode(user.email, users);
     changed = true;
@@ -111,23 +158,37 @@ function migrateUser(user, users) {
 }
 
 function showLogin() {
-  document.getElementById("loginForm").classList.add("active");
-  document.getElementById("registerForm").classList.remove("active");
+  const loginForm = document.getElementById("loginForm");
+  const registerForm = document.getElementById("registerForm");
+
+  if (!loginForm || !registerForm) return;
+
+  loginForm.classList.add("active");
+  registerForm.classList.remove("active");
 
   const tabs = document.querySelectorAll(".tab");
-  tabs[0].classList.add("active");
-  tabs[1].classList.remove("active");
+  if (tabs.length >= 2) {
+    tabs[0].classList.add("active");
+    tabs[1].classList.remove("active");
+  }
 
   showMessage("", "");
 }
 
 function showRegister() {
-  document.getElementById("registerForm").classList.add("active");
-  document.getElementById("loginForm").classList.remove("active");
+  const loginForm = document.getElementById("loginForm");
+  const registerForm = document.getElementById("registerForm");
+
+  if (!loginForm || !registerForm) return;
+
+  registerForm.classList.add("active");
+  loginForm.classList.remove("active");
 
   const tabs = document.querySelectorAll(".tab");
-  tabs[1].classList.add("active");
-  tabs[0].classList.remove("active");
+  if (tabs.length >= 2) {
+    tabs[1].classList.add("active");
+    tabs[0].classList.remove("active");
+  }
 
   showMessage("", "");
 }
@@ -162,6 +223,11 @@ function loginUser(event) {
     return;
   }
 
+  if (users[userIndex].blocked) {
+    showMessage("حساب شما توسط مدیریت مسدود شده است.", "error");
+    return;
+  }
+
   const changed = migrateUser(users[userIndex], users);
   if (changed) saveUsers(users);
 
@@ -189,13 +255,13 @@ function registerUser(event) {
     return;
   }
 
-  if (!email.includes("@")) {
+  if (email.length > 150 || !EMAIL_PATTERN.test(email)) {
     showMessage("ایمیل واردشده معتبر نیست.", "error");
     return;
   }
 
-  if (password.length < 4) {
-    showMessage("رمز عبور باید حداقل ۴ کاراکتر باشد.", "error");
+  if (password.length < 8) {
+    showMessage("رمز عبور باید حداقل ۸ کاراکتر باشد.", "error");
     return;
   }
 
@@ -221,9 +287,15 @@ function registerUser(event) {
   }
 
   const now = new Date().toISOString();
+  const generatedFullname =
+    normalizeEmail(email).split("@")[0].slice(0, 100) || "User";
+  const generatedUsername = createAvailableUsername(email, users);
 
   const newUser = {
+    fullname: generatedFullname,
+    username: generatedUsername,
     email: email,
+    phone: "",
     password: password,
 
     wallet: {
@@ -277,7 +349,12 @@ function prefillInviteCode() {
   const inviteInput = document.getElementById("inviteCode");
   if (inviteInput) {
     inviteInput.value = String(code).trim().toUpperCase();
-    showRegister();
+    if (
+      document.getElementById("loginForm") &&
+      document.getElementById("registerForm")
+    ) {
+      showRegister();
+    }
   }
 }
 
