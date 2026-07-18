@@ -2,9 +2,7 @@
 
 const USERS_KEY = "shaye_users";
 const CURRENT_USER_KEY = "shaye_current_user";
-const USERNAME_PATTERN = /^[a-zA-Z0-9_.-]{3,32}$/;
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const PHONE_PATTERN = /^[0-9+\s()-]{7,20}$/;
 
 function normalizeEmail(value) {
   return String(value || "").trim().toLowerCase();
@@ -244,16 +242,7 @@ function loginUser(event) {
 function registerUser(event) {
   event.preventDefault();
 
-  const fullname = String(
-    document.getElementById("registerFullname").value || ""
-  ).trim();
-  const username = normalizeUsername(
-    document.getElementById("registerUsername").value
-  );
   const email = normalizeEmail(document.getElementById("registerEmail").value);
-  const phone = String(
-    document.getElementById("registerPhone").value || ""
-  ).trim();
   const password = document.getElementById("registerPassword").value;
   const confirmPassword = document.getElementById("confirmPassword").value;
   const inviteCode = document.getElementById("inviteCode").value.trim();
@@ -261,31 +250,13 @@ function registerUser(event) {
 
   showMessage("", "");
 
-  if (!fullname || !username || !email || !password || !confirmPassword) {
+  if (!email || !password || !confirmPassword) {
     showMessage("لطفاً همه فیلدهای ضروری را کامل کنید.", "error");
     return;
   }
 
-  if (fullname.length < 2 || fullname.length > 100) {
-    showMessage("نام و نام خانوادگی باید بین ۲ تا ۱۰۰ کاراکتر باشد.", "error");
-    return;
-  }
-
-  if (!USERNAME_PATTERN.test(username)) {
-    showMessage(
-      "نام کاربری باید ۳ تا ۳۲ کاراکتر و فقط شامل حروف انگلیسی، عدد، نقطه، خط تیره یا زیرخط باشد.",
-      "error"
-    );
-    return;
-  }
-
-  if (!EMAIL_PATTERN.test(email)) {
+  if (email.length > 150 || !EMAIL_PATTERN.test(email)) {
     showMessage("ایمیل واردشده معتبر نیست.", "error");
-    return;
-  }
-
-  if (phone && !PHONE_PATTERN.test(phone)) {
-    showMessage("شماره تلفن واردشده معتبر نیست.", "error");
     return;
   }
 
@@ -308,15 +279,6 @@ function registerUser(event) {
     return;
   }
 
-  if (
-    users.some(function (user) {
-      return normalizeUsername(user.username) === username;
-    })
-  ) {
-    showMessage("این نام کاربری قبلاً ثبت شده است.", "error");
-    return;
-  }
-
   const referrer = findReferrer(users, inviteCode);
 
   if (inviteCode && !referrer) {
@@ -325,12 +287,15 @@ function registerUser(event) {
   }
 
   const now = new Date().toISOString();
+  const generatedFullname =
+    normalizeEmail(email).split("@")[0].slice(0, 100) || "User";
+  const generatedUsername = createAvailableUsername(email, users);
 
   const newUser = {
-    fullname: fullname,
-    username: username,
+    fullname: generatedFullname,
+    username: generatedUsername,
     email: email,
-    phone: phone,
+    phone: "",
     password: password,
 
     wallet: {
