@@ -2,9 +2,40 @@
 
 const USERS_KEY = "shaye_users";
 const CURRENT_USER_KEY = "shaye_current_user";
+const USERNAME_PATTERN = /^[a-zA-Z0-9_.-]{3,32}$/;
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const PHONE_PATTERN = /^[0-9+\s()-]{7,20}$/;
 
 function normalizeEmail(value) {
   return String(value || "").trim().toLowerCase();
+}
+
+function normalizeUsername(value) {
+  return String(value || "").trim().toLowerCase();
+}
+
+function createAvailableUsername(email, users, currentUser) {
+  let base = normalizeEmail(email)
+    .split("@")[0]
+    .replace(/[^a-zA-Z0-9_.-]/g, "")
+    .slice(0, 24)
+    .toLowerCase();
+
+  if (base.length < 3) base = "user";
+
+  let candidate = base;
+  let suffix = 1;
+
+  while (
+    users.some(function (user) {
+      return user !== currentUser && normalizeUsername(user.username) === candidate;
+    })
+  ) {
+    candidate = (base + suffix).slice(0, 32);
+    suffix += 1;
+  }
+
+  return candidate;
 }
 
 function loadUsers() {
@@ -67,6 +98,24 @@ function findReferrer(users, inviteCode) {
 function migrateUser(user, users) {
   let changed = false;
 
+  if (!user.fullname) {
+    user.fullname =
+      String(user.name || "").trim() ||
+      normalizeEmail(user.email).split("@")[0] ||
+      "User";
+    changed = true;
+  }
+
+  if (!user.username) {
+    user.username = createAvailableUsername(user.email, users, user);
+    changed = true;
+  }
+
+  if (typeof user.phone !== "string") {
+    user.phone = "";
+    changed = true;
+  }
+
   if (!user.referralCode) {
     user.referralCode = createReferralCode(user.email, users);
     changed = true;
@@ -111,23 +160,37 @@ function migrateUser(user, users) {
 }
 
 function showLogin() {
-  document.getElementById("loginForm").classList.add("active");
-  document.getElementById("registerForm").classList.remove("active");
+  const loginForm = document.getElementById("loginForm");
+  const registerForm = document.getElementById("registerForm");
+
+  if (!loginForm || !registerForm) return;
+
+  loginForm.classList.add("active");
+  registerForm.classList.remove("active");
 
   const tabs = document.querySelectorAll(".tab");
-  tabs[0].classList.add("active");
-  tabs[1].classList.remove("active");
+  if (tabs.length >= 2) {
+    tabs[0].classList.add("active");
+    tabs[1].classList.remove("active");
+  }
 
   showMessage("", "");
 }
 
 function showRegister() {
-  document.getElementById("registerForm").classList.add("active");
-  document.getElementById("loginForm").classList.remove("active");
+  const loginForm = document.getElementById("loginForm");
+  const registerForm = document.getElementById("registerForm");
+
+  if (!loginForm || !registerForm) return;
+
+  registerForm.classList.add("active");
+  loginForm.classList.remove("active");
 
   const tabs = document.querySelectorAll(".tab");
-  tabs[1].classList.add("active");
-  tabs[0].classList.remove("active");
+  if (tabs.length >= 2) {
+    tabs[1].classList.add("active");
+    tabs[0].classList.remove("active");
+  }
 
   showMessage("", "");
 }
@@ -162,6 +225,11 @@ function loginUser(event) {
     return;
   }
 
+  if (users[userIndex].blocked) {
+    showMessage("حساب شما توسط مدیریت مسدود شده است.", "error");
+    return;
+  }
+
   const changed = migrateUser(users[userIndex], users);
   if (changed) saveUsers(users);
 
@@ -176,7 +244,16 @@ function loginUser(event) {
 function registerUser(event) {
   event.preventDefault();
 
+  const fullname = String(
+    document.getElementById("registerFullname").value || ""
+  ).trim();
+  const username = normalizeUsername(
+    document.getElementById("registerUsername").value
+  );
   const email = normalizeEmail(document.getElementById("registerEmail").value);
+  const phone = String(
+    document.getElementById("registerPhone").value || ""
+  ).trim();
   const password = document.getElementById("registerPassword").value;
   const confirmPassword = document.getElementById("confirmPassword").value;
   const inviteCode = document.getElementById("inviteCode").value.trim();
@@ -184,18 +261,36 @@ function registerUser(event) {
 
   showMessage("", "");
 
-  if (!email || !password || !confirmPassword) {
+  if (!fullname || !username || !email || !password || !confirmPassword) {
     showMessage("لطفاً همه فیلدهای ضروری را کامل کنید.", "error");
     return;
   }
 
-  if (!email.includes("@")) {
+  if (fullname.length < 2 || fullname.length > 100) {
+    showMessage("نام و نام خانوادگی باید بین ۲ تا ۱۰۰ کاراکتر باشد.", "error");
+    return;
+  }
+
+  if (!USERNAME_PATTERN.test(username)) {
+    showMessage(
+      "نام کاربری باید ۳ تا ۳۲ کاراکتر و فقط شامل حروف انگلیسی، عدد، نقطه، خط تیره یا زیرخط باشد.",
+      "error"
+    );
+    return;
+  }
+
+  if (!EMAIL_PATTERN.test(email)) {
     showMessage("ایمیل واردشده معتبر نیست.", "error");
     return;
   }
 
-  if (password.length < 4) {
-    showMessage("رمز عبور باید حداقل ۴ کاراکتر باشد.", "error");
+  if (phone && !PHONE_PATTERN.test(phone)) {
+    showMessage("شماره تلفن واردشده معتبر نیست.", "error");
+    return;
+  }
+
+  if (password.length < 8) {
+    showMessage("رمز عبور باید حداقل ۸ کاراکتر باشد.", "error");
     return;
   }
 
@@ -213,6 +308,15 @@ function registerUser(event) {
     return;
   }
 
+  if (
+    users.some(function (user) {
+      return normalizeUsername(user.username) === username;
+    })
+  ) {
+    showMessage("این نام کاربری قبلاً ثبت شده است.", "error");
+    return;
+  }
+
   const referrer = findReferrer(users, inviteCode);
 
   if (inviteCode && !referrer) {
@@ -223,7 +327,10 @@ function registerUser(event) {
   const now = new Date().toISOString();
 
   const newUser = {
+    fullname: fullname,
+    username: username,
     email: email,
+    phone: phone,
     password: password,
 
     wallet: {
@@ -277,7 +384,12 @@ function prefillInviteCode() {
   const inviteInput = document.getElementById("inviteCode");
   if (inviteInput) {
     inviteInput.value = String(code).trim().toUpperCase();
-    showRegister();
+    if (
+      document.getElementById("loginForm") &&
+      document.getElementById("registerForm")
+    ) {
+      showRegister();
+    }
   }
 }
 
