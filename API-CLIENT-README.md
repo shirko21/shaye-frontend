@@ -5,16 +5,17 @@ passwords in `localStorage`.
 
 ## Configuration
 
-The API address is defined in `assets/js/api-config.js`. Development defaults
-to:
+The API address is defined in `assets/js/api-config.js`. The current testing
+default is the public GitHub Codespaces backend:
 
 ```text
-http://localhost:3000/api
+https://refactored-train-9vvj99975wy2x75q-3000.app.github.dev/api
 ```
 
-Set `window.SHAYE_API_CONFIG.baseUrl` to the deployed HTTPS backend URL before
-publishing the frontend. A `shaye_api_base_url` localStorage value can override
-the default for development without editing the file.
+The Codespace and its `npm start` process must remain running for this testing
+address to work. If the Codespace is deleted and recreated, replace the default
+with the newly generated public port URL. A `shaye_api_base_url` localStorage
+value can override the default for development without editing the file.
 
 ## Session storage
 
