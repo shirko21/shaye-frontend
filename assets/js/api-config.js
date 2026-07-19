@@ -12,7 +12,11 @@
 
   global.SHAYE_API_CONFIG = {
     baseUrl:
-      String(existing.baseUrl || savedBaseUrl || "http://localhost:3000/api")
+      String(
+        existing.baseUrl ||
+          savedBaseUrl ||
+          "https://refactored-train-9vvj99975wy2x75q-3000.app.github.dev/api"
+      )
         .trim()
         .replace(/\/+$/, ""),
     timeoutMs: Number(existing.timeoutMs) || 15000
