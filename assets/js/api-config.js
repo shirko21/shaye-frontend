@@ -5,14 +5,17 @@
     "https://refactored-train-9vvj99975wy2x75q-3000.app.github.dev/api";
   var existing = global.SHAYE_API_CONFIG || {};
   var savedBaseUrl = "";
-  var isPublishedGithubPages =
-    global.location &&
-    global.location.hostname === "shirko21.github.io";
+  var hostname =
+    global.location && global.location.hostname
+      ? global.location.hostname
+      : "";
+  var isPublishedGithubPages = hostname === "shirko21.github.io";
+  var isCodespacesPreview = /\.app\.github\.dev$/i.test(hostname);
 
   try {
     savedBaseUrl = localStorage.getItem("shaye_api_base_url") || "";
 
-    // A stale localhost/testing override must not break the published site.
+    // Stale development overrides must not break the published site.
     if (isPublishedGithubPages && savedBaseUrl) {
       localStorage.removeItem("shaye_api_base_url");
       savedBaseUrl = "";
@@ -24,9 +27,9 @@
   global.SHAYE_API_CONFIG = {
     baseUrl:
       String(
-        existing.baseUrl ||
-          savedBaseUrl ||
-          TEST_API_BASE_URL
+        isCodespacesPreview
+          ? global.location.origin + "/api"
+          : existing.baseUrl || savedBaseUrl || TEST_API_BASE_URL
       )
         .trim()
         .replace(/\/+$/, ""),
