@@ -8,34 +8,6 @@ function normalizeEmail(value) {
   return String(value || "").trim().toLowerCase();
 }
 
-function normalizeUsername(value) {
-  return String(value || "").trim().toLowerCase();
-}
-
-function createAvailableUsername(email, users, currentUser) {
-  let base = normalizeEmail(email)
-    .split("@")[0]
-    .replace(/[^a-zA-Z0-9_.-]/g, "")
-    .slice(0, 24)
-    .toLowerCase();
-
-  if (base.length < 3) base = "user";
-
-  let candidate = base;
-  let suffix = 1;
-
-  while (
-    users.some(function (user) {
-      return user !== currentUser && normalizeUsername(user.username) === candidate;
-    })
-  ) {
-    candidate = (base + suffix).slice(0, 32);
-    suffix += 1;
-  }
-
-  return candidate;
-}
-
 function loadUsers() {
   try {
     const users = JSON.parse(localStorage.getItem(USERS_KEY)) || [];
@@ -58,103 +30,113 @@ function showMessage(text, type) {
   message.className = type || "";
 }
 
-function createReferralCode(email, users) {
-  const base =
-    normalizeEmail(email)
-      .split("@")[0]
-      .replace(/[^a-zA-Z0-9]/g, "")
-      .slice(0, 6)
-      .toUpperCase() || "USER";
+function createCachedUser(apiUser) {
+  const now = apiUser.created_at || new Date().toISOString();
 
-  let code = "";
+  return {
+    id: apiUser.id,
+    fullname: apiUser.fullname || normalizeEmail(apiUser.email).split("@")[0],
+    username: apiUser.username || "",
+    email: normalizeEmail(apiUser.email),
+    phone: apiUser.phone || "",
+    balance: Number(apiUser.balance) || 0,
+    isAdmin: Boolean(apiUser.is_admin),
+    status: apiUser.status || "active",
 
-  do {
-    code = "SH" + base + Math.floor(1000 + Math.random() * 9000);
-  } while (
-    users.some(function (user) {
-      return String(user.referralCode || "").toUpperCase() === code;
-    })
-  );
+    wallet: {
+      address: "",
+      network: "BEP20",
+      status: "pending"
+    },
 
-  return code;
+    investmentBalance: 0,
+    withdrawBalance: Number(apiUser.balance) || 0,
+    activeVip: 0,
+    referralProfit: 0,
+    dailyProfit: 0,
+    transactions: [],
+
+    wheelSpins: 1,
+    wheelSpinsUsed: 0,
+    wheelHistory: [],
+    wheelReferralRewards: [],
+
+    referralCode: apiUser.referral_code || "",
+    referredBy: apiUser.referred_by_email || "",
+    usedInviteCode: "",
+
+    vipActivatedAt: "",
+    vipExpiresAt: "",
+    lastTaskClaimId: "",
+    lastTaskClaimedAt: "",
+    profitDaysClaimed: 0,
+
+    createdAt: now
+  };
 }
 
-function findReferrer(users, inviteCode) {
-  const normalizedCode = String(inviteCode || "").trim().toUpperCase();
+function syncApiUser(apiUser, options) {
+  if (!apiUser || !apiUser.email) {
+    throw new Error("API user is missing an email address");
+  }
 
-  if (!normalizedCode) return null;
+  const users = loadUsers();
+  const email = normalizeEmail(apiUser.email);
+  const index = users.findIndex(function (user) {
+    return normalizeEmail(user.email) === email;
+  });
+  const user = index === -1 ? createCachedUser(apiUser) : users[index];
 
-  return (
-    users.find(function (user) {
-      return (
-        String(user.referralCode || "").trim().toUpperCase() === normalizedCode
-      );
-    }) || null
-  );
+  user.id = apiUser.id;
+  user.fullname = apiUser.fullname || user.fullname || email.split("@")[0];
+  user.username = apiUser.username || user.username || "";
+  user.email = email;
+  user.phone = apiUser.phone || "";
+  user.balance = Number(apiUser.balance) || 0;
+  user.isAdmin = Boolean(apiUser.is_admin);
+  user.status = apiUser.status || "active";
+  user.referralCode =
+    apiUser.referral_code || apiUser.referralCode || user.referralCode || "";
+  user.referredBy =
+    apiUser.referred_by_email || apiUser.referredByEmail || user.referredBy || "";
+
+  if (options && options.inviteCode) {
+    user.usedInviteCode = String(options.inviteCode).trim().toUpperCase();
+  }
+
+  if (!user.createdAt) {
+    user.createdAt = apiUser.created_at || new Date().toISOString();
+  }
+
+  delete user.password;
+
+  if (index === -1) users.push(user);
+  else users[index] = user;
+
+  saveUsers(users);
+  localStorage.setItem(CURRENT_USER_KEY, email);
+  return user;
 }
 
-function migrateUser(user, users) {
-  let changed = false;
+function setSubmitting(form, submitting, loadingText) {
+  if (!form) return;
 
-  if (!user.fullname) {
-    user.fullname =
-      String(user.name || "").trim() ||
-      normalizeEmail(user.email).split("@")[0] ||
-      "User";
-    changed = true;
+  const button = form.querySelector('button[type="submit"]');
+  if (!button) return;
+
+  if (!button.dataset.originalText) {
+    button.dataset.originalText = button.textContent;
   }
 
-  if (!user.username) {
-    user.username = createAvailableUsername(user.email, users, user);
-    changed = true;
-  }
+  button.disabled = submitting;
+  button.textContent = submitting
+    ? loadingText
+    : button.dataset.originalText;
+}
 
-  if (typeof user.phone !== "string") {
-    user.phone = "";
-    changed = true;
-  }
-
-  if (!user.referralCode) {
-    user.referralCode = createReferralCode(user.email, users);
-    changed = true;
-  }
-
-  if (typeof user.referredBy !== "string") {
-    user.referredBy = "";
-    changed = true;
-  }
-
-  if (typeof user.investmentBalance !== "number") {
-    user.investmentBalance =
-      Number(user.investment) || Number(user.investedBalance) || 0;
-    changed = true;
-  }
-
-  if (typeof user.withdrawBalance !== "number") {
-    user.withdrawBalance =
-      Number(user.withdrawableBalance) ||
-      Number(user.profit) ||
-      Number(user.balance) ||
-      0;
-    changed = true;
-  }
-
-  if (typeof user.referralProfit !== "number") {
-    user.referralProfit = 0;
-    changed = true;
-  }
-
-  if (typeof user.dailyProfit !== "number") {
-    user.dailyProfit = 0;
-    changed = true;
-  }
-
-  if (!Array.isArray(user.transactions)) {
-    user.transactions = [];
-    changed = true;
-  }
-
-  return changed;
+function apiErrorMessage(error) {
+  if (window.ShayeApi) return window.ShayeApi.getErrorMessage(error);
+  return "ارتباط با سرور آماده نیست. لطفاً دوباره تلاش کنید.";
 }
 
 function showLogin() {
@@ -200,12 +182,12 @@ function togglePassword(id) {
   input.type = input.type === "password" ? "text" : "password";
 }
 
-function loginUser(event) {
+async function loginUser(event) {
   event.preventDefault();
 
+  const form = event.currentTarget || document.getElementById("loginForm");
   const email = normalizeEmail(document.getElementById("loginEmail").value);
   const password = document.getElementById("loginPassword").value;
-  const users = loadUsers();
 
   showMessage("", "");
 
@@ -214,39 +196,39 @@ function loginUser(event) {
     return;
   }
 
-  const userIndex = users.findIndex(function (user) {
-    return normalizeEmail(user.email) === email && user.password === password;
-  });
-
-  if (userIndex === -1) {
-    showMessage("ایمیل یا رمز عبور اشتباه است.", "error");
+  if (!window.ShayeApi) {
+    showMessage("ارتباط با سرور آماده نیست.", "error");
     return;
   }
 
-  if (users[userIndex].blocked) {
-    showMessage("حساب شما توسط مدیریت مسدود شده است.", "error");
-    return;
+  setSubmitting(form, true, "در حال ورود...");
+
+  try {
+    const result = await window.ShayeApi.login({ email, password });
+    window.ShayeApi.saveSession(result);
+    syncApiUser(result.user);
+
+    showMessage("ورود موفق بود؛ در حال انتقال به حساب...", "success");
+
+    setTimeout(function () {
+      window.location.href = "dashboard.html";
+    }, 500);
+  } catch (error) {
+    console.error("Login error:", error);
+    showMessage(apiErrorMessage(error), "error");
+  } finally {
+    setSubmitting(form, false, "");
   }
-
-  const changed = migrateUser(users[userIndex], users);
-  if (changed) saveUsers(users);
-
-  localStorage.setItem(CURRENT_USER_KEY, email);
-  showMessage("ورود موفق بود؛ در حال انتقال به حساب...", "success");
-
-  setTimeout(function () {
-    window.location.href = "dashboard.html";
-  }, 500);
 }
 
-function registerUser(event) {
+async function registerUser(event) {
   event.preventDefault();
 
+  const form = event.currentTarget || document.getElementById("registerForm");
   const email = normalizeEmail(document.getElementById("registerEmail").value);
   const password = document.getElementById("registerPassword").value;
   const confirmPassword = document.getElementById("confirmPassword").value;
   const inviteCode = document.getElementById("inviteCode").value.trim();
-  const users = loadUsers();
 
   showMessage("", "");
 
@@ -260,8 +242,8 @@ function registerUser(event) {
     return;
   }
 
-  if (password.length < 8) {
-    showMessage("رمز عبور باید حداقل ۸ کاراکتر باشد.", "error");
+  if (password.length < 8 || password.length > 128) {
+    showMessage("رمز عبور باید بین ۸ تا ۱۲۸ کاراکتر باشد.", "error");
     return;
   }
 
@@ -270,74 +252,34 @@ function registerUser(event) {
     return;
   }
 
-  if (
-    users.some(function (user) {
-      return normalizeEmail(user.email) === email;
-    })
-  ) {
-    showMessage("این ایمیل قبلاً ثبت شده است.", "error");
+  if (!window.ShayeApi) {
+    showMessage("ارتباط با سرور آماده نیست.", "error");
     return;
   }
 
-  const referrer = findReferrer(users, inviteCode);
+  setSubmitting(form, true, "در حال ثبت‌نام...");
 
-  if (inviteCode && !referrer) {
-    showMessage("کد دعوت واردشده معتبر نیست.", "error");
-    return;
+  try {
+    const result = await window.ShayeApi.register({
+      email,
+      password,
+      inviteCode: inviteCode ? inviteCode.toUpperCase() : ""
+    });
+
+    window.ShayeApi.saveSession(result);
+    syncApiUser(result.user, { inviteCode });
+
+    showMessage("ثبت‌نام موفق بود؛ در حال ورود به حساب...", "success");
+
+    setTimeout(function () {
+      window.location.href = "dashboard.html";
+    }, 500);
+  } catch (error) {
+    console.error("Register error:", error);
+    showMessage(apiErrorMessage(error), "error");
+  } finally {
+    setSubmitting(form, false, "");
   }
-
-  const now = new Date().toISOString();
-  const generatedFullname =
-    normalizeEmail(email).split("@")[0].slice(0, 100) || "User";
-  const generatedUsername = createAvailableUsername(email, users);
-
-  const newUser = {
-    fullname: generatedFullname,
-    username: generatedUsername,
-    email: email,
-    phone: "",
-    password: password,
-
-    wallet: {
-      address: "",
-      network: "BEP20",
-      status: "pending"
-    },
-
-    investmentBalance: 0,
-    withdrawBalance: 0,
-    activeVip: 0,
-    referralProfit: 0,
-    dailyProfit: 0,
-    transactions: [],
-
-    wheelSpins: 1,
-    wheelSpinsUsed: 0,
-    wheelHistory: [],
-    wheelReferralRewards: [],
-
-    referralCode: createReferralCode(email, users),
-    referredBy: referrer ? normalizeEmail(referrer.email) : "",
-    usedInviteCode: referrer ? String(referrer.referralCode || "") : "",
-
-    vipActivatedAt: "",
-    vipExpiresAt: "",
-    lastTaskClaimId: "",
-    lastTaskClaimedAt: "",
-    profitDaysClaimed: 0,
-
-    createdAt: now
-  };
-
-  users.push(newUser);
-  saveUsers(users);
-  localStorage.setItem(CURRENT_USER_KEY, email);
-
-  showMessage("ثبت‌نام موفق بود؛ در حال ورود به حساب...", "success");
-
-  setTimeout(function () {
-    window.location.href = "dashboard.html";
-  }, 500);
 }
 
 function prefillInviteCode() {
